@@ -2,15 +2,23 @@
 title: "About me"
 layout: "about"
 summary: "about"
-tags: ["cloud", "DevOps", "full-stack", "IT"]
+tags: ["about"]
 searchable: true
 ---
 
-# About Me
+# 🧭 About
 
-I'm Umberto Domenico, and welcome to my blog — a space where I share thoughts, lessons, and projects from my journey through cloud, DevOps, full-stack software engineering, and all things IT.
+**Last updated:** 11:32 PM, 24th April 2025
 
-I write about what I build, what I break, and what I learn along the way — from coding and deploying to securing and scaling.
+Welcome to **Umberto Domenico Ciccia's Blog**, a sliding window into my obsessions — ranging from sustainable open source to tech policy advocacy and personal reflections.
 
-If it's your first time here, check out my featured posts or read more about who I am.
+I’m a Cloud Engineer and Cybersecurity student with a deep passion for **open source**, **open education**, **cloud** and **DevOps**. Most of the code I write is open source, and I actively maintain projects, including those under the **Unical<3Telegram**.
 
+This blog is where I:
+
+- 📦 Share tutorials and insights from open source projects  
+- ✍️ Document unfiltered thoughts and daily ramblings  
+- 📰 Publish about my passions
+- 🧭 Reflect on tech
+
+AI tools help me think and code faster — but everything you read here is written by me. Writing is how I process the world, and I believe outsourcing thinking doesn’t make sense.
