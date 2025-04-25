@@ -1,10 +1,8 @@
 ---
 date: '2025-04-24T23:49:04+02:00'
-title: 'Create Post'
+title: 'Create Blog like this'
 searchable: true
 ---
-
-# Create a blog like this
 
 ## How to Create a Personal Blog with Hugo and PaperMod 🚀
 

@@ -1,11 +1,10 @@
 ---
 date: '2025-04-24T23:49:24+02:00'
-title: 'Aws Saa'
+title: 'How I Passed the AWS Certified Solutions Architect – Associate(SAA-C03)'
 tags: ['aws','saa-c03']
 searchable: true
 ---
 
-# How I Passed the AWS Certified Solutions Architect – Associate (SAA-C03)
 
 ## ✅ Passed SAA-C03: A Milestone in My Cloud Journey
 
