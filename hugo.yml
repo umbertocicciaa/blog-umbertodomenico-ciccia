@@ -106,7 +106,7 @@ params:
       url: "https://www.linkedin.com/in/umberto-domenico-ciccia/"
 
   editPost:
-    URL: "https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content"
+    URL: "https://github.com/umbertocicciaa/blog-umbertodomenico-ciccia/tree/main/content"
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 
