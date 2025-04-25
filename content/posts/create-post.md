@@ -1,7 +1,7 @@
 ---
 date: '2025-04-24T23:49:04+02:00'
-draft: true
 title: 'Create Post'
+searchable: true
 ---
 
 # Create a blog like this

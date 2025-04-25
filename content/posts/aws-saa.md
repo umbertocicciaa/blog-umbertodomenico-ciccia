@@ -1,8 +1,8 @@
 ---
 date: '2025-04-24T23:49:24+02:00'
-draft: true
 title: 'Aws Saa'
 tags: ['aws','saa-c03']
+searchable: true
 ---
 
 # How I Passed the AWS Certified Solutions Architect – Associate (SAA-C03)
