@@ -59,13 +59,6 @@ Thank you for considering contributing to this blog! Your contributions are grea
 - Follow proper Markdown formatting for posts.
 - Use descriptive commit messages.
 - Check for typos and grammatical errors before submitting.
-- Respect the [Code of Conduct](#code-of-conduct).
-
----
-
-## Code of Conduct
-
-By contributing, you agree to uphold a respectful and inclusive environment. Harassment, discrimination, or inappropriate behavior will not be tolerated.
 
 ---
 
