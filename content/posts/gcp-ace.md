@@ -59,5 +59,3 @@ This certification gave me a much deeper confidence in using Google Cloud, and I
 
 ---
 ✉️ If you're studying for ACE, feel free to reach out or comment — I’m happy to share tips and notes.
-
-Follow [*The Open Source Absolu*]()
