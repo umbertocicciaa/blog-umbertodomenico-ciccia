@@ -21,7 +21,7 @@ In this post, I'll break down what I contributed to each project, the problems I
 
 #### 🔧 Jenkins Contribution
 
-📌 **PR:** [Fix deprecation warning by removing usage of `@ExtensionList.lookup`](https://github.com/jenkinsci/jenkins/pull/10619)
+📌 **PR:** [Fix deprecation warning by removing usage of `AtomicFileWriter`](https://github.com/jenkinsci/jenkins/pull/10619)
 
 In the Jenkins project, I contributed a small but meaningful fix to clean up deprecated code usage. Specifically, I replaced a deprecated use of `AtomicFileWriter` with the modern equivalent. This kind of work is vital for long-term code health and maintenance, especially in projects with a long history and large install base like Jenkins.
 
