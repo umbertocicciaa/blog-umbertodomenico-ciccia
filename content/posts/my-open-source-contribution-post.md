@@ -21,7 +21,6 @@ In this post, I'll break down what I contributed to each project, the problems I
 
 #### 🔧 Jenkins Contribution
 
-📌 **PR:** [Fix deprecation warning by removing usage of `AtomicFileWriter`](https://github.com/jenkinsci/jenkins/pull/10619)
 
 In the Jenkins project, I contributed a small but meaningful fix to clean up deprecated code usage. Specifically, I replaced a deprecated use of `AtomicFileWriter` with the modern equivalent. This kind of work is vital for long-term code health and maintenance, especially in projects with a long history and large install base like Jenkins.
 
@@ -31,7 +30,6 @@ The change helped address a **deprecation warning** in the codebase, promoting b
 
 #### ☸️ Kubernetes Contribution
 
-📌 **PR:** [Playground contribution: signed CLA and started coding](https://github.com/kubernetes-sigs/contributor-playground/pull/1822)
 
 With Kubernetes, I began by contributing to the [`contributor-playground`](https://github.com/kubernetes-sigs/contributor-playground) — a repository meant to help new contributors get familiar with the contribution process.
 
