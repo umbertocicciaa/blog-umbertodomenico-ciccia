@@ -3,6 +3,7 @@ date: "2025-06-09T10:36:50+02:00"
 title: "Analyzing U.S. Air Flights with Apache Spark and Hadoop"
 tags: ["big data", "spark", "hadoop", "university project", "data engineering"]
 description: "A university project that explores large-scale flight data analysis using Apache Spark, Hadoop, and the U.S. DOT air travel dataset."
+searchable: true
 ---
 
 For my university course in **Big Data and Cloud Computing**, I developed a hands-on project to process and analyze U.S. domestic flight data using a big data pipeline built on **Apache Spark**, **Hadoop** and **Hive**.
