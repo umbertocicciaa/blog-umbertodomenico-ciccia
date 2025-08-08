@@ -145,6 +145,7 @@ I could access the homepage via:
 
 ## Demo
 
+![Hardware](/blog-umbertodomenico-ciccia/images/homelab/hardware.png)
 ![Homepage](/blog-umbertodomenico-ciccia/images/homelab/homepage.png)
 ![Smoketest proxy](/blog-umbertodomenico-ciccia/images/homelab/smoketest-proxy.png)
 ![Smoketest k3s cluster](/blog-umbertodomenico-ciccia/images/homelab/smoketestnginx.png)
