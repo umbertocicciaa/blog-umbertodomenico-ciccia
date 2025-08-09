@@ -7,7 +7,7 @@ tags: ["k3s", "kubernetes", "k8s", "devops", "homelab", "homeserver", "homepage"
 
 ## Introduction
 
-After some tinkering in my homelab, I decided to build a **2-node Raspberry Pi 4 cluster** running [K3s](https://k3s.io/) — one **master** and one **worker** — to learn Kubernetes and host my own services.  
+After some tinkering, I decided to build an homebalb with **2-node Raspberry Pi 4 cluster** running [K3s](https://k3s.io/) — one **master** and one **worker** — to learn better Kubernetes and host my own services.  
 In this post, I’ll walk you through the process: from **hardware setup** to **K3s installation** and **homepage deployment** with ingress access.
 
 ---
@@ -132,7 +132,7 @@ Using the default ingress class of K3s (Traefik).
 
 After updating my `/etc/hosts` on my proxy PC:
 
-```
+```txt
 192.168.1.50 homepage.local
 ```
 
