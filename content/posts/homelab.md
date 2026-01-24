@@ -3,6 +3,7 @@ date: '2025-08-08T23:32:20+02:00'
 title: 'Building a Raspberry Pi 4 K3s Cluster'
 description: "How I built a 2-node Raspberry Pi 4 cluster with K3s, deployed my homepage, and exposed it via the default ingress class."
 tags: ["k3s", "kubernetes", "k8s", "devops", "homelab", "homeserver", "homepage"]
+searchable: true
 ---
 
 ## Introduction

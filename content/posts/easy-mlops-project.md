@@ -1,7 +1,8 @@
 ---
 title: "10 Powerful Reasons “easy-mlops” Makes Production ML Ridiculously Simple"
 date: 2025-10-23
-draft: false
+draft: true
+searchable: false
 summary: "easy-mlops is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime."
 tags: ["easy-mlops", "MLOps", "machine-learning", "DevOps", "FastAPI", "scikit-learn"]
 categories: ["MLOps", "Engineering"]

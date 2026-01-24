@@ -1,7 +1,8 @@
 ---
 title: "DevOpsFix Review: 11 Powerful Reasons This AI Tool Supercharges CI/CD"
 date: 2025-10-23
-draft: false
+draft: true
+searchable: false
 tags: ["devops", "cicd", "ai", "llm", "github-actions", "gitlab-ci", "jenkins", "pipeline", "review"]
 categories: ["DevOps", "AI Engineering"]
 description: "devopsfix is an open-source app that analyzes and fixes CI/CD pipelines using LLMs. Learn how it works, why it matters, and how to deploy it."

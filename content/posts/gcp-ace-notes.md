@@ -2,7 +2,7 @@
 date: '2025-04-26T14:13:56+02:00'
 title: 'Gcp Ace Notes'
 tags: ['gcp','notes']
-searchable: true
+searchable: false
 ---
 
 ## Admin

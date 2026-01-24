@@ -2,7 +2,7 @@
 date: '2025-04-24T23:59:00+02:00'
 title: 'How I Passed the Google Cloud Associate Cloud Engineer (ACE) Exam'
 tags: ['gcp', 'ace', 'cloud', 'certifications']
-searchable: true
+searchable: false
 ---
 
 ## Introduction

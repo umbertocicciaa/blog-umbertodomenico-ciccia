@@ -3,6 +3,7 @@ title: "How to Develop a Jenkins Pipeline with a Custom Agent Pod Template from 
 date: 2025-07-31
 description: Learn how to configure a Jenkins pipeline using a custom Kubernetes agent pod template stored in a separate Git repository.
 tags: ["jenkins", "kubernetes", "ci/cd", "devops"]
+searchable: true
 ---
 
 Jenkins pipelines running on Kubernetes offer powerful customization using pod templates. In this post, you’ll learn how to define a custom Kubernetes agent pod in a YAML template located in a **different Git repository**, and then use that in your Jenkins pipeline.

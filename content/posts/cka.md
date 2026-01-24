@@ -3,6 +3,7 @@
 title: "How I Passed the CKA (Certified Kubernetes Administrator) Exam"
 date: 2025-08-27
 draft: false
+searchable: true
 slug: how-i-passed-cka
 tags: ["Kubernetes", "CKA", "Certification", "DevOps", "Cloud Native"]
 description: "My step-by-step study plan, practice routine, and exam-day strategy for earning the CKA."
