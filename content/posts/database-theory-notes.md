@@ -5,6 +5,7 @@ description: "Comprehensive notes on database theory: conceptual, logical, and p
 tags: ["databases", "sql", "relational-algebra", "transactions", "b-tree", "hashing", "indexes", "acid", "notes"]
 categories: ["Engineering"]
 searchable: true
+math: true
 ---
 
 ## Introduction

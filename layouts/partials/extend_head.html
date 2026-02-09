@@ -1,0 +1,6 @@
+{{- /* Head custom content area start */ -}}
+{{- /* Insert any custom code (web-analytics, resources, etc.) - it will appear in the <head></head> section of every page. */ -}}
+{{ if .Param "math" }}
+  {{ partialCached "math.html" . }}
+{{ end }}
+{{- /* Head custom content area end */ -}}

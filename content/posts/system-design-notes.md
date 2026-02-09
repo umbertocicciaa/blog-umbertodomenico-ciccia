@@ -5,6 +5,7 @@ description: "Comprehensive notes on system design fundamentals: scaling, cachin
 tags: ["system-design", "scalability", "caching", "load-balancing", "databases", "networking", "api", "notes"]
 categories: ["Engineering"]
 searchable: true
+math: true
 ---
 
 ## Basic Application Architecture

@@ -5,6 +5,7 @@ description: "In-depth notes on computer networking: the OSI and TCP/IP models, 
 tags: ["networking", "tcp-ip", "osi", "routing", "http", "dns", "tcp", "udp", "security", "notes"]
 categories: ["Engineering"]
 searchable: true
+math: true
 ---
 
 ## Introduction
