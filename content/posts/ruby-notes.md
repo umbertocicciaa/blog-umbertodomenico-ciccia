@@ -1,5 +1,5 @@
 ---
-title: Ddeep dive into Ruby'
+title: Ddeep dive into Ruby
 date: 2026-02-09
 tags: [ruby, programming-languages, internals, metaprogramming]
 categories: ["Engineering"]
