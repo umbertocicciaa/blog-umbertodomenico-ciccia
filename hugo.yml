@@ -104,6 +104,9 @@ params:
     - name: Linkedin
       title: My Linkedin
       url: "https://www.linkedin.com/in/umberto-domenico-ciccia/"
+    - name: Youtube
+      title: My Youtube
+      url: "https://www.youtube.com/@umbertocicciaa"
 
   editPost:
     URL: "https://github.com/umbertocicciaa/blog-umbertodomenico-ciccia/tree/main/content"
