@@ -6,6 +6,7 @@ tags: ["system-design", "scalability", "caching", "load-balancing", "databases",
 categories: ["Engineering"]
 searchable: true
 math: true
+mermaid: true
 lastmod: 2026-03-19
 toc: true
 ---
