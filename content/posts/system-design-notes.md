@@ -23,6 +23,17 @@ A typical application is composed of:
 - **Metric Storage Server** — logs all metrics
 - **Alert Server** — alerts when something goes down
 
+#### Stateless vs Stateful Services
+
+- **Stateless**: the server holds no session data between requests. Any instance can serve any request. Enables effortless horizontal scaling.
+- **Stateful**: the server holds session data (e.g. WebSocket connections, in-memory cart). Requires sticky sessions (session affinity at the load balancer) or externalizing state to Redis/a DB.
+
+| | Stateless | Stateful |
+|---|---|---|
+| Horizontal scaling | Trivial — add instances freely | Hard — requires sticky sessions or external state |
+| Fault tolerance | High — any replica serves the request | Low — losing a server loses its session data |
+| Examples | REST APIs, static servers | WebSocket servers, game servers, video call nodes |
+
 ### User Perspective
 
 Users simply make requests to the server and receive responses.
@@ -44,6 +55,15 @@ graph LR
     DB --> Replica2[(Read Replica 2)]
 ```
 
+#### Single Points of Failure
+
+| Layer | SPOF risk | Mitigation |
+|---|---|---|
+| Server | Single app server fails → full outage | Horizontal scaling + load balancer |
+| Load balancer | LB fails → full outage | Active-active LB pair with floating IP (VRRP) |
+| Database | Single DB fails → data unavailable | Primary + read replicas, automatic failover |
+| Storage | Single disk fails → data loss | RAID, object storage with replication (S3 11-nines durability) |
+
 ---
 
 ### Scaling
@@ -51,6 +71,10 @@ graph LR
 - **Vertical Scaling:** add more physical resources (CPU, RAM) to a single server
 - **Horizontal Scaling:** add more servers to distribute the load
 - **Load Balancer:** distributes traffic between multiple servers
+
+#### Vertical Scaling Limits
+
+> ⚠️ **Warning:** Vertical scaling has a hard ceiling. The largest cloud instances (e.g. AWS `u-24tb1.metal`) top out at ~448 vCPUs and 24 TB RAM and cost thousands of dollars per hour. Beyond that, horizontal scaling is the only option.
 
 ![Horizontal Scaling with Load Balancer](/blog-umbertodomenico-ciccia/images/system-design-notes/scaling.png)
 
@@ -85,13 +109,35 @@ $$\frac{23 \text{ hours}}{23 \text{ hours} + 1 \text{ hour}} = 96\%$$
 
 > 💡 **Tip:** Each additional nine is roughly 10× harder to achieve. Going from 99.9% to 99.99% often requires redundant infrastructure, active-active deployments, and chaos engineering.
 
-**SLI** — Service Level Indicator: measures performance of a system
+**SLI / SLO / SLA** — worked example:
 
-**SLO** — Service Level Objective: target goals for SLI (e.g., 99.9% availability)
+```
+SLI  = (successful requests / total requests) × 100
+SLO  = "API availability SLI ≥ 99.9% over a rolling 30-day window"
+SLA  = contract: if SLO is breached, customer receives 10% service credit
+```
 
-**SLA** — Service Level Agreement: contracts with customers for SLO
+#### Error Budget
+
+The error budget is the allowed failure quota derived directly from the SLO:
+
+$$\text{Error Budget} = 1 - \text{SLO} = 1 - 0.999 = 0.001 = 43.8 \text{ min/month}$$
+
+Assuming a 30.44-day average month (\(365.25/12\)): \(0.001 \times 30.44 \times 24 \times 60 \approx 43.8\) minutes (rounded to one decimal place).
+
+- Teams spend the error budget on deployments, experiments, and planned maintenance.
+- When the budget is exhausted, all risky changes freeze until the window resets.
+- This creates a healthy tension between reliability (SRE) and feature velocity (Dev).
 
 **Reliability** — measures the probability of a system failing
+
+#### Reliability
+
+$$\text{MTBF} = \frac{\text{Total uptime}}{\text{Number of failures}} \qquad \text{MTTR} = \frac{\text{Total downtime}}{\text{Number of failures}}$$
+
+$$\text{Availability} = \frac{\text{MTBF}}{\text{MTBF} + \text{MTTR}}$$
+
+Improving availability means either increasing MTBF (fewer failures — better code, hardware) or decreasing MTTR (faster recovery — better alerting, runbooks, auto-remediation).
 
 **Fault Tolerance** — measures how much our system can continue working under failure
 
@@ -101,7 +147,16 @@ $$\frac{23 \text{ hours}}{23 \text{ hours} + 1 \text{ hour}} = 96\%$$
 
 $$\text{Throughput} = \frac{\text{operations}}{\text{time}} = \frac{\text{queries}}{\text{seconds}} = \frac{\text{bytes}}{\text{seconds}}$$
 
-**Latency** — measures how long it takes to complete a request
+**Latency** — measured as a **percentile distribution**, not a mean:
+
+| Percentile | Meaning |
+|---|---|
+| p50 (median) | Half of requests are faster than this |
+| p95 | 95% of requests are faster than this |
+| p99 | 99% of requests are faster than this — what most users experience at the tail |
+| p999 | 1-in-1000 requests — the "long tail" that affects your biggest/most active users |
+
+> 💡 **Tip:** Always design to a p99 target, not a mean. A mean of 50ms can hide a p99 of 2,000ms. Users at the tail are often your highest-value customers (power users making the most requests).
 
 ---
 
@@ -131,6 +186,77 @@ $$\text{Throughput} = \frac{\text{operations}}{\text{time}} = \frac{\text{querie
 | **UDP** | Non-stateful communication, no guarantees |
 
 > 💡 **Tip:** Use **UDP** for real-time applications (video calls, games) where occasional packet loss is acceptable but latency must be minimal. Use **TCP** when every byte must arrive in order (file transfers, APIs).
+
+#### TCP Three-Way Handshake
+
+Every TCP connection requires 1 full round-trip before data can flow:
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    C->>S: SYN (seq=x)
+    S->>C: SYN-ACK (seq=y, ack=x+1)
+    C->>S: ACK (ack=y+1)
+    Note over C,S: Connection established — data transfer begins
+```
+
+Cost implications:
+- 1 RTT overhead per new TCP connection
+- HTTPS adds another 1-2 RTTs for the TLS handshake on top
+- This is why connection pooling and HTTP/2 multiplexing matter so much at scale
+
+> 💡 **Tip:** Connection pooling (PgBouncer for Postgres, HikariCP for Java) amortises the TCP + TLS handshake cost across many requests. At scale, a fresh TLS handshake per request can cost 50–100ms — more than the query itself.
+
+#### DNS Resolution
+
+DNS translates human-readable hostnames into IP addresses. The resolution chain:
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant R as Recursive Resolver (ISP)
+    participant Root as Root Nameserver
+    participant TLD as TLD Nameserver (.com)
+    participant Auth as Authoritative NS (example.com)
+    B->>R: resolve api.example.com
+    R->>Root: who handles .com?
+    Root->>R: TLD NS address
+    R->>TLD: who handles example.com?
+    TLD->>R: Authoritative NS address
+    R->>Auth: what is api.example.com?
+    Auth->>R: 93.184.216.34 (TTL: 300s)
+    R->>B: 93.184.216.34 (cached for 300s)
+```
+
+Key system design implications:
+- **TTL controls propagation delay** — low TTL = faster failover, higher DNS load; high TTL = slower failover, less load
+- **GeoDNS** — return different IPs based on the requester's geographic location (closest region)
+- **DNS-based load balancing** — return multiple A records; clients round-robin. Simple but no health checks.
+
+#### TLS Handshake
+
+TLS adds encryption, authentication, and integrity on top of TCP. Modern TLS 1.3 takes 1 RTT (vs 2 RTTs for TLS 1.2):
+
+1. **ClientHello** — client sends supported cipher suites, TLS version, random nonce
+2. **ServerHello + Certificate** — server chooses cipher, sends its X.509 certificate
+3. **Key Exchange** — both sides derive the same session key using ECDHE (no key transmitted)
+4. **Finished** — both sides confirm encryption is working; data flow begins
+
+> 💡 **Tip:** TLS termination at a load balancer means internal traffic is unencrypted. For regulated industries (healthcare, finance), use **mTLS** (mutual TLS) internally so every service authenticates both directions.
+
+#### HTTP/1.1 vs HTTP/2 vs HTTP/3
+
+| Feature | HTTP/1.1 | HTTP/2 | HTTP/3 |
+|---|---|---|---|
+| Transport | TCP | TCP | QUIC (UDP) |
+| Multiplexing | No — one request per connection | Yes — multiple streams per connection | Yes |
+| Head-of-line blocking | Per-connection | TCP-level (one lost packet stalls all streams) | Eliminated — per-stream |
+| Header compression | None | HPACK | QPACK |
+| Connection setup | TCP + TLS = 2 RTT | TCP + TLS = 2 RTT | 0-RTT possible |
+| Best for | Legacy systems | Most modern APIs | Mobile, lossy networks |
+
+> 📖 **Deep Dive:** HTTP/3 and QUIC are defined in [RFC 9000](https://www.rfc-editor.org/rfc/rfc9000). Cloudflare's blog has an excellent series on their real-world QUIC deployment.
 
 ---
 
@@ -200,9 +326,35 @@ WebSockets establish a persistent, full-duplex connection between client and ser
 - **Layered** — client and server are decoupled; can talk to replicas transparently
 
 #### GraphQL
-- Uses only **POST** requests
-- Body contains queries for fetching data
-- Less cacheable compared to REST
+
+GraphQL lets clients request exactly the data they need — no over-fetching (getting unused fields) or under-fetching (needing multiple requests for related data).
+
+**The N+1 Query Problem** — GraphQL's most common performance trap:
+
+```python
+# Naive resolver — fires 1 DB query per user (N+1 total)
+def resolve_posts(root, info):
+    posts = db.query("SELECT * FROM posts")          # 1 query
+    for post in posts:
+        post.author = db.query(                       # N queries
+            "SELECT * FROM users WHERE id = ?",
+            post.author_id
+        )
+    return posts
+```
+
+Solution: **DataLoader** — batches all author lookups into a single `SELECT * FROM users WHERE id IN (...)` query.
+
+| | REST | GraphQL | gRPC |
+|---|---|---|---|
+| Protocol | HTTP/1.1+ | HTTP/1.1+ | HTTP/2 |
+| Data format | JSON | JSON | Protobuf (binary) |
+| Schema | OpenAPI (optional) | SDL (required) | .proto (required) |
+| Type safety | Weak | Strong | Strong |
+| Caching | HTTP cache (GET) | Hard (POST only) | Custom |
+| Browser support | Native | Native | Needs gRPC-Web |
+| Best for | Public APIs | Complex client needs | Internal microservices |
+| Streaming | SSE / WebSocket | Subscriptions | Native bi-directional |
 
 #### gRPC
 - Typically used for **server-to-server** communication
@@ -211,6 +363,12 @@ WebSockets establish a persistent, full-duplex connection between client and ser
 - Supports **bi-directional streaming**
 - Uses exceptions instead of status codes
 - Built on **HTTP/2**
+
+Cons:
+- **No native browser support** — requires gRPC-Web proxy (Envoy) or gRPC-Web library
+- **Binary protocol** — harder to debug than JSON (need protoc or grpcurl)
+- **Schema evolution rules** — never change field numbers; only add new fields; deprecate with `reserved`
+- **Tight coupling** — both sides must share the `.proto` schema file
 
 ### API Design Best Practices
 
@@ -253,6 +411,67 @@ Practical selection guidance:
 When clients exceed limits, return `429 Too Many Requests` with a `Retry-After` header.
 
 Common implementations include NGINX rate limiting, Redis + Lua scripts, and API Gateway products such as Kong and AWS API Gateway.
+
+#### Authentication & Authorisation
+
+| Pattern | How it works | Best for |
+|---|---|---|
+| API Key | Static secret in header (`X-API-Key`) | Server-to-server, simple integrations |
+| Basic Auth | Base64(user:pass) in `Authorization` header | Legacy, internal tools (always over HTTPS) |
+| OAuth2 + OIDC | Token-based delegated access, refresh tokens | Third-party login, user-facing apps |
+| JWT | Self-contained signed token; no DB lookup to verify | Stateless APIs, microservices |
+| mTLS | Both client and server present certificates | Internal service-to-service (zero trust) |
+
+**JWT structure:**
+
+```
+header.payload.signature
+```
+
+```json
+// Header
+{ "alg": "RS256", "typ": "JWT" }
+
+// Payload (claims — do NOT store sensitive data, it's only base64-encoded)
+{ "sub": "user-123", "roles": ["admin"], "exp": 1742000000 }
+
+// Signature = RS256(base64(header) + "." + base64(payload), private_key)
+```
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as Auth Service
+    participant R as Resource API
+    C->A: POST /login (credentials)
+    A->C: access_token (15min) + refresh_token (7d)
+    C->R: GET /api/data (Bearer access_token)
+    R->R: Verify JWT signature (no DB call)
+    R->C: 200 OK + data
+    Note over C,R: 15 minutes later...
+    C->A: POST /refresh (refresh_token)
+    A->C: new access_token
+```
+
+> ⚠️ **Warning:** JWTs cannot be revoked before expiry without a token blocklist (Redis set of revoked JWT IDs; token identifier claim = `jti`). Keep access token lifetime short (15 min) and use refresh tokens for renewal.
+
+> 📖 **Deep Dive:** Read [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519) for the JWT spec and [oauth.net](https://oauth.net/2/) for the full OAuth2 framework.
+
+#### API Versioning
+
+| Strategy | Example | Pros | Cons |
+|---|---|---|---|
+| URL versioning | `/v1/users` | Explicit, easy to route | Proliferates versions in URL |
+| Header versioning | `Accept: application/vnd.api+json; version=2` | Clean URL | Less discoverable |
+| Query param | `?version=2` | Simple | Easily forgotten |
+
+Best practice: use URL versioning for public APIs, maintain at least 2 major versions simultaneously, and add a `Sunset` response header 6–12 months before deprecating:
+
+```
+Sunset: Sat, 01 Jan 2027 00:00:00 GMT
+Deprecation: true
+Link: <https://api.example.com/v2/users>; rel="successor-version"
+```
 
 ---
 
@@ -357,6 +576,61 @@ Uses two maps and a frequency tracker:
   min_freq = 1
 ```
 
+#### Redis Data Structures
+
+Redis is far more than a key-value store:
+
+| Structure | Command | Use case |
+|---|---|---|
+| String | `SET/GET` | Simple cache, counters, rate limiting |
+| Hash | `HSET/HGETALL` | User profile, session data |
+| List | `LPUSH/RPOP` | Task queues, activity feeds |
+| Sorted Set | `ZADD/ZRANGE` | Leaderboards, priority queues, time-series |
+| HyperLogLog | `PFADD/PFCOUNT` | Approximate unique visitor counts (±0.81% error) |
+| Pub/Sub | `PUBLISH/SUBSCRIBE` | Real-time notifications, chat |
+| Stream | `XADD/XREAD` | Durable event log, Kafka-lite |
+
+#### Cache Stampede (Thundering Herd)
+
+When a popular cache key expires simultaneously for many concurrent requests, they all miss and hammer the database at once.
+
+Three mitigations:
+
+1. **Mutex / single-flight** — only one request fetches from DB; others wait for the cached result
+2. **Probabilistic early expiration (PER)** — slightly before TTL expires, some requests proactively refresh:
+   ```python
+   import random, math
+   def should_refresh(ttl_remaining, beta=1.0):
+       return -math.log(random.random()) * beta > ttl_remaining
+   ```
+   `beta` controls refresh aggressiveness (higher beta refreshes earlier/more often; typical values are 0.5–2.0) because `-log(random()) * beta` grows with `beta`, so the expression exceeds `ttl_remaining` more often.
+3. **Background refresh** — a background job refreshes cache before TTL expires; serving never misses
+
+> 💡 **Tip:** In Go, `singleflight.Group` and in Java, Guava's `LoadingCache` implement the single-flight pattern out of the box — one request fetches, all others wait for the result.
+
+#### Cache Invalidation Strategies
+
+> 💡 **Tip:** "There are only two hard things in computer science: cache invalidation and naming things." — Phil Karlton
+
+| Strategy | How it works | When to use |
+|---|---|---|
+| TTL expiry | Data expires after N seconds | Tolerable staleness, read-heavy |
+| Event-driven | Write to DB triggers cache delete/update | Strong consistency requirement |
+| Versioned keys | `user:123:v4` — bump version on write | Immutable deployments, CDN busting |
+| Tag-based | Tag cache entries; invalidate by tag | Complex relationships (e.g. all posts by user X) |
+
+#### Cache Penetration & Bloom Filters
+
+Cache penetration: clients repeatedly query keys that don't exist in cache or DB (malicious or buggy). Every request falls through to DB.
+
+Mitigation: **Bloom Filter** — a probabilistic data structure that answers "definitely not in DB" in O(1) with zero false negatives. If the Bloom filter says the key doesn't exist, skip the DB entirely.
+
+```
+Request key → Bloom Filter check
+  ├─ "Definitely not in DB" → return 404 immediately (no DB hit)
+  └─ "Maybe in DB" → check cache → check DB
+```
+
 ---
 
 ## CDN (Content Delivery Network)
@@ -374,6 +648,37 @@ The origin server **pushes** data to CDN edge nodes proactively.
 CDN edge nodes **pull** data from the origin server on cache miss.
 
 ![Pull CDN](/blog-umbertodomenico-ciccia/images/system-design-notes/pull-cdn.png)
+
+#### Cache-Control Headers
+
+The origin server instructs CDN and browser caches via `Cache-Control`:
+
+| Directive | Meaning |
+|---|---|
+| `max-age=3600` | Cache for 3600 seconds (client + CDN) |
+| `s-maxage=86400` | CDN caches for 86400s; client uses `max-age` |
+| `no-cache` | Must revalidate with origin before serving |
+| `no-store` | Never cache (sensitive data: banking, health) |
+| `stale-while-revalidate=60` | Serve stale while fetching fresh in background |
+| `immutable` | Content never changes — skip revalidation entirely (versioned assets: `app.v3.js`) |
+
+Best practice for static assets: version the filename (`main.abc123.js`), set `Cache-Control: public, max-age=31536000, immutable`. Change the filename on every deploy — zero stale content, infinite cache lifetime.
+
+#### Edge Computing
+
+Modern CDNs run code at the edge, eliminating round-trips to the origin entirely:
+
+- **Cloudflare Workers** — V8 JavaScript at 300+ edge locations, <1ms cold start
+- **AWS Lambda@Edge / CloudFront Functions** — Node.js or lightweight JS at the CDN layer
+- **Use cases**: A/B testing without origin round-trip, auth token validation, request rewriting, personalised HTML without a server
+
+#### When NOT to Use a CDN
+
+> ⚠️ **Warning:** CDNs hurt more than they help in these cases:
+> - **Highly personalised responses** — every user gets unique HTML; CDN hit rate approaches 0%
+> - **Sensitive data** — CDN provider can inspect unencrypted content at their edge
+> - **Very high write frequency** — data changing faster than TTL means users always get stale content
+> - **Low-latency internal APIs** — adding CDN hops increases latency for internal traffic
 
 ---
 
@@ -400,6 +705,46 @@ CDN edge nodes **pull** data from the origin server on cache miss.
 - Handles **SSL termination** and **caching**
 - Protects the **servers**
 
+#### API Gateway vs Reverse Proxy
+
+These terms are often conflated but have distinct responsibilities:
+
+| Concern | Reverse Proxy | API Gateway |
+|---|---|---|
+| TLS termination | Yes | Yes |
+| Load balancing | Yes | Yes |
+| Authentication | No | Yes (JWT, OAuth2, API keys) |
+| Rate limiting | Basic | Advanced (per-user, per-plan) |
+| Request transformation | No | Yes (header injection, body rewrite) |
+| Routing by content | Limited | Yes (route by path, header, body) |
+| Analytics / logging | Basic | Detailed per-endpoint |
+| Examples | NGINX, HAProxy | Kong, AWS API Gateway, Apigee |
+
+#### Service Mesh & Sidecar Proxies
+
+At microservice scale, cross-cutting concerns (auth, retries, circuit breaking, tracing) become a tax on every service team. A **service mesh** moves this logic into a sidecar proxy injected alongside each service container.
+
+```
+┌─────────────────────────────────────────┐
+│  Pod A                   Pod B           │
+│  ┌──────────┐           ┌──────────┐    │
+│  │ Service  │◄─mTLS────►│ Service  │    │
+│  └──────────┘           └──────────┘    │
+│  ┌──────────┐           ┌──────────┐    │
+│  │  Envoy   │           │  Envoy   │    │  ← sidecar proxies
+│  │ (sidecar)│           │ (sidecar)│    │
+│  └──────────┘           └──────────┘    │
+└─────────────────────────────────────────┘
+            ▲                   ▲
+            └──── Control Plane (Istio / Linkerd) ────┘
+```
+
+What the sidecar handles automatically (zero code changes to the service):
+- mTLS between all services (zero-trust networking)
+- Distributed tracing (injects trace IDs into every request)
+- Circuit breaking and retries with backoff
+- Traffic splitting for canary deployments
+
 ### SSL Termination
 
 SSL connection ends at the proxy. Internal traffic from proxy to server uses plain HTTP.
@@ -415,6 +760,28 @@ All traffic remains encrypted end-to-end. The proxy forwards encrypted traffic w
 ## Load Balancer
 
 A **load balancer** is a reverse proxy that distributes traffic to backend servers.
+
+#### Health Checks
+
+A load balancer must know which backends are healthy before routing traffic.
+
+| Type | Mechanism | Pros | Cons |
+|---|---|---|---|
+| Passive | Detect failures from real request errors (5xx, timeouts) | No extra traffic | Slow to detect — real users see errors first |
+| Active | Periodically probe a `/health` or `/ready` endpoint | Fast detection | Endpoint must be implemented and meaningful |
+
+Health check config (NGINX example):
+
+```nginx
+upstream backend {
+    server app1:8080;
+    server app2:8080;
+    health_check interval=5s fails=3 passes=2 uri=/health;
+}
+```
+
+- `fails=3` — remove backend after 3 consecutive failures
+- `passes=2` — re-add backend after 2 consecutive successes (avoids flapping)
 
 ### Round Robin
 
@@ -479,6 +846,34 @@ This approach is used in Cassandra, DynamoDB, Amazon load balancing systems, and
 
 Trade-off: implementation is slightly more complex, but lookup is typically **O(log N)** with a sorted map or tree structure.
 
+#### Sticky Sessions
+
+Some stateful applications require that a user's requests always reach the same server (e.g., servers holding in-memory session state).
+
+Methods:
+- **Cookie-based**: LB injects a `SERVERID` cookie; subsequent requests route to the same server
+- **IP-hash**: already covered in the post — but note that it breaks with NAT (many users share one IP)
+
+> ⚠️ **Warning:** Sticky sessions undermine the purpose of load balancing — one server can become overloaded if a user's session is expensive. The better solution is to externalize session state to Redis so any server can handle any request.
+
+#### Connection Draining
+
+When a backend is being removed (deployment, scale-down), in-flight requests must complete:
+
+1. LB marks backend as "draining" — stops sending new connections
+2. Existing connections are allowed to finish (configurable timeout, e.g. 30s)
+3. After drain period, backend is removed
+
+Without draining: users experience abrupt mid-request 502 errors on every deployment.
+
+#### Load Balancer High Availability
+
+The LB itself is a single point of failure. Standard solutions:
+
+- **Active-passive**: primary LB handles traffic; secondary is on standby. Floating IP (VRRP) moves to secondary on failure. Failover time: 1–5s.
+- **Active-active**: both LBs handle traffic; DNS or anycast routes to either. No failover delay; doubles capacity.
+- **Cloud-managed LBs** (AWS ALB, GCP Cloud Load Balancing): Google/AWS manages HA internally — the LB is not a SPOF from your perspective.
+
 ### Layer 4 vs Layer 7 Load Balancing
 
 | Type | Level | Speed | Intelligence |
@@ -539,6 +934,76 @@ CREATE TABLE People (
 | **Isolation** | Concurrent transactions execute as if running in isolation |
 | **Durability** | Once committed, data persists even after system failure (stored on disk) |
 
+#### Transaction Isolation Levels
+
+ACID's "Isolation" property has four levels — each a trade-off between correctness and concurrency:
+
+| Level | Dirty Read | Non-Repeatable Read | Phantom Read | Performance |
+|---|---|---|---|---|
+| Read Uncommitted | Possible | Possible | Possible | Highest |
+| Read Committed | Prevented | Possible | Possible | High (Postgres default) |
+| Repeatable Read | Prevented | Prevented | Possible | Medium (MySQL InnoDB default) |
+| Serializable | Prevented | Prevented | Prevented | Lowest |
+
+> ⚠️ **Warning:** Many ORMs (Hibernate, SQLAlchemy) default to **Read Committed** and do not automatically wrap multi-step operations in a single transaction unless you explicitly define a transaction boundary. Always verify your ORM is actually wrapping writes in a transaction — especially for operations like order creation + inventory decrement.
+
+Definitions:
+- **Dirty read**: reading uncommitted data from another transaction
+- **Non-repeatable read**: re-reading a row mid-transaction returns different values (another TX committed a change)
+- **Phantom read**: re-running a query mid-transaction returns different rows (another TX inserted/deleted)
+
+> 💡 **Tip:** Most applications work correctly at **Read Committed**. Reach for **Serializable** only when financial or inventory correctness is critical — and test performance carefully, as it can reduce throughput by 10–100×.
+
+#### MVCC (Multi-Version Concurrency Control)
+
+Modern databases (PostgreSQL, MySQL InnoDB) achieve isolation without blocking reads using MVCC:
+
+- Every row has a `created_at` and `expired_at` transaction ID
+- A `SELECT` sees a snapshot of all rows that were committed **before the transaction started**
+- Writers create a new row version; readers see the old version concurrently
+- Result: readers never block writers, writers never block readers
+
+This is why `SELECT` in Postgres is almost always non-blocking — it reads from a consistent snapshot, not the live data.
+
+```mermaid
+sequenceDiagram
+    participant T1 as Transaction 1 (reader)
+    participant T2 as Transaction 2 (writer)
+    participant DB as Database
+    T1->DB: BEGIN (snapshot at txn_id=100)
+    T2->DB: BEGIN
+    T2->DB: UPDATE users SET name='Bob' WHERE id=1
+    T2->DB: COMMIT (txn_id=101)
+    T1->DB: SELECT name FROM users WHERE id=1
+    DB->T1: 'Alice' (sees snapshot at txn_id=100, not 101)
+    T1->DB: COMMIT
+    Note over T1,DB: T1 read a consistent snapshot — never blocked T2
+```
+
+#### Write-Ahead Log (WAL)
+
+WAL is the mechanism behind ACID Durability. Before any data page is modified:
+
+1. The change is **written to an append-only log on disk** (the WAL)
+2. The log entry is `fsync`'d — guaranteed to survive a crash
+3. Only then is the in-memory buffer modified and eventually flushed to the data file
+
+On crash recovery: replay the WAL to reconstruct any uncommitted changes. This is also the foundation of **replication** — replicas stream and replay the WAL from the primary.
+
+> 📖 **Deep Dive:** The PostgreSQL WAL documentation explains the full recovery model: https://www.postgresql.org/docs/current/wal-intro.html
+
+#### LSM-Tree vs B+ Tree
+
+| | B+ Tree | LSM-Tree |
+|---|---|---|
+| Used by | PostgreSQL, MySQL, SQLite | Cassandra, RocksDB, LevelDB |
+| Write path | In-place update (random I/O) | Sequential append to memtable → SSTables |
+| Read path | Fast (O(log n) single lookup) | Slower (check multiple SSTables + bloom filters) |
+| Write throughput | Moderate | Very high |
+| Read throughput | Very high | Good (with bloom filters + caching) |
+| Space amplification | Low | Higher (compaction needed) |
+| Best for | Mixed read/write, OLTP | Write-heavy, time-series, log storage |
+
 ### NoSQL
 
 | Type | Description | Examples |
@@ -573,6 +1038,17 @@ Master replicates data on slaves **at write time**. Used when **critical consist
 
 #### Asynchronous Replication
 Master replicates data on slaves **later**. Used when consistency can be **eventually** achieved.
+
+#### Read Replicas & Replication Lag
+
+Read replicas offload `SELECT` queries from the primary, but introduce replication lag:
+
+- **Synchronous replication**: zero lag; every write waits for replica ACK. Adds write latency equal to network RTT to replica.
+- **Asynchronous replication**: near-zero write latency; lag typically <1s on healthy networks but can spike to minutes under high write load.
+
+Application implications:
+- After a `POST /orders` (write), don't immediately `GET /orders` from a replica — you may read your own stale write. Use **read-your-writes consistency**: route reads to the primary for a short post-write window keyed by user/session (size this window from measured replication lag + safety margin), or use a consistency token that forces primary reads until replicas catch up.
+- **Replica lag monitoring**: alert if lag exceeds your SLO. Key metric: `seconds_behind_master` in MySQL, `pg_stat_replication.write_lag` in Postgres.
 
 #### Master-Master Replication
 Multiple masters replicate each other and each replicates its own slaves. Ideal for **multi-region** setups with one master per region.
