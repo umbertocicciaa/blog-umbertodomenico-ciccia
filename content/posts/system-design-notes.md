@@ -6,6 +6,8 @@ tags: ["system-design", "scalability", "caching", "load-balancing", "databases",
 categories: ["Engineering"]
 searchable: true
 math: true
+lastmod: 2026-03-19
+toc: true
 ---
 
 ## Basic Application Architecture
@@ -24,6 +26,23 @@ A typical application is composed of:
 ### User Perspective
 
 Users simply make requests to the server and receive responses.
+
+### System Architecture Overview
+
+```mermaid
+graph LR
+    User -->|HTTPS| CDN
+    CDN -->|Cache Miss| LB[Load Balancer]
+    LB --> App1[App Server 1]
+    LB --> App2[App Server 2]
+    LB --> App3[App Server 3]
+    App1 --> Cache[(Redis Cache)]
+    App2 --> Cache
+    App3 --> Cache
+    Cache -->|Cache Miss| DB[(Primary DB)]
+    DB --> Replica1[(Read Replica 1)]
+    DB --> Replica2[(Read Replica 2)]
+```
 
 ---
 
@@ -56,6 +75,15 @@ $$\text{Availability} = \frac{\text{uptime}}{\text{uptime} + \text{downtime}}$$
 Example:
 
 $$\frac{23 \text{ hours}}{23 \text{ hours} + 1 \text{ hour}} = 96\%$$
+
+| Availability | Downtime per year | Downtime per month |
+|---|---|---|
+| 99% ("two nines") | ~3.65 days | ~7.3 hours |
+| 99.9% ("three nines") | ~8.77 hours | ~43.8 minutes |
+| 99.99% ("four nines") | ~52.6 minutes | ~4.4 minutes |
+| 99.999% ("five nines") | ~5.26 minutes | ~26 seconds |
+
+> 💡 **Tip:** Each additional nine is roughly 10× harder to achieve. Going from 99.9% to 99.99% often requires redundant infrastructure, active-active deployments, and chaos engineering.
 
 **SLI** — Service Level Indicator: measures performance of a system
 
@@ -101,6 +129,8 @@ $$\text{Throughput} = \frac{\text{operations}}{\text{time}} = \frac{\text{querie
 | **SSH** | Remote connection to a host |
 | **TCP** | Stateful communication, 3-way handshake, congestion handling, retransmission of lost packages |
 | **UDP** | Non-stateful communication, no guarantees |
+
+> 💡 **Tip:** Use **UDP** for real-time applications (video calls, games) where occasional packet loss is acceptable but latency must be minimal. Use **TCP** when every byte must arrive in order (file transfers, APIs).
 
 ---
 
@@ -204,6 +234,26 @@ GET https://api.example.com/v1/users/:id/tweets?limit=10&offset=0
 | DELETE | ✅ Yes |
 | POST | ⚠️ Depends on implementation |
 
+#### Rate Limiting
+
+Rate limiting protects backend services from abuse and accidental overload.
+
+Common algorithms:
+- **Token Bucket** — tokens refill at a fixed rate; requests consume tokens. Allows short bursts.
+- **Leaky Bucket** — requests are processed at a fixed rate; excess requests are queued or dropped. Smooths output traffic.
+- **Fixed Window** — count requests per time window (for example, 1000 req/min). Simple but vulnerable to boundary bursts.
+- **Sliding Window** — tracks requests over a rolling window. More accurate than fixed windows, but uses more memory.
+
+Practical selection guidance:
+- **Token Bucket** when APIs must tolerate short bursts without overwhelming downstream systems.
+- **Leaky Bucket** when you need steady outbound flow to protect a constrained backend.
+- **Fixed Window** when implementation simplicity matters more than strict fairness.
+- **Sliding Window** when enforcement accuracy is more important than memory overhead.
+
+When clients exceed limits, return `429 Too Many Requests` with a `Retry-After` header.
+
+Common implementations include NGINX rate limiting, Redis + Lua scripts, and API Gateway products such as Kong and AWS API Gateway.
+
 ---
 
 ## Caching
@@ -258,6 +308,8 @@ DB and cache are kept **in sync**. Best for **consistency-critical systems** —
 ![Write Back Cache](/blog-umbertodomenico-ciccia/images/system-design-notes/cache-write-back.png)
 
 Writes go to cache first, then **asynchronously flushed** to the database. Ideal for **write-heavy** scenarios where immediate consistency isn't critical (logging, social media feeds).
+
+> ⚠️ **Warning:** Write-back caching risks data loss if the cache crashes before flushing to the database. Always evaluate your durability requirements before using it.
 
 #### Strategies Summary
 
@@ -402,6 +454,31 @@ Servers and keys are mapped onto a **hash ring**. Keys route clockwise to the ne
 
 ![Consistent Hashing](/blog-umbertodomenico-ciccia/images/system-design-notes/consistent-hashing.png)
 
+### Consistent Hashing Deep Dive
+
+With regular modular hashing, adding or removing a server changes `N`, so most keys are remapped:
+
+`server = hash(key) % N`
+
+Consistent hashing places both keys and servers on the same logical ring `[0, 2^32)`. To route a request, hash the key and move clockwise to the next server position on the ring. When a server is added or removed, only nearby key ranges move.
+
+```mermaid
+graph TD
+    Ring["Hash Ring [0 → 2³²]"]
+    Ring --> S1["Server A @ position 10"]
+    Ring --> S2["Server B @ position 120"]
+    Ring --> S3["Server C @ position 240"]
+    S1 --> K1["Key 'user:1' → hash 15\nRoutes to Server A"]
+    S2 --> K2["Key 'user:2' → hash 130\nRoutes to Server B"]
+    S3 --> K3["Key 'user:3' → hash 250\nRoutes to Server C"]
+```
+
+**Virtual nodes (vnodes)** map each physical server to multiple ring positions to improve balance. Without vnodes, random placement can make one server own a disproportionately large arc and receive most traffic.
+
+This approach is used in Cassandra, DynamoDB, Amazon load balancing systems, and many Memcached client libraries.
+
+Trade-off: implementation is slightly more complex, but lookup is typically **O(log N)** with a sorted map or tree structure.
+
 ### Layer 4 vs Layer 7 Load Balancing
 
 | Type | Level | Speed | Intelligence |
@@ -429,6 +506,14 @@ Key properties:
 - Data is stored **only on leaf nodes**
 - Leaf level forms a **sorted linked list**
 - Root/internal nodes are used to efficiently locate data on leaf nodes
+
+| Index Type | Best for | Trade-off |
+|---|---|---|
+| B+ Tree | Range queries, sorted access | Slower writes |
+| Hash Index | Exact-match lookups | No range queries |
+| Composite Index | Multi-column WHERE clauses | Column order matters |
+| Covering Index | Queries answered entirely from index | More storage |
+| Full-Text Index | `LIKE` / text search | Not for numeric data |
 
 #### Table Structure
 
@@ -503,14 +588,157 @@ Multiple masters replicate each other and each replicates its own slaves. Ideal 
 - **Relational databases** — sharding is done at the application level
 - **NoSQL databases** — horizontal scaling per shard
 
-### CAP Theorem
+| Strategy | How it works | Pros | Cons |
+|---|---|---|---|
+| **Range sharding** | Rows with key in [A–M] → Shard 1, [N–Z] → Shard 2 | Simple range queries | Hotspots if data is skewed |
+| **Hash sharding** | `shard = hash(key) % N` | Uniform distribution | No range queries; resharding is expensive |
+| **Directory sharding** | A lookup table maps keys → shards | Flexible | Lookup table is a SPOF; extra hop |
+| **Geo sharding** | Data partitioned by user geography | Low latency | Cross-region queries are hard |
+
+> ⚠️ **Warning:** Avoid sharding until you genuinely need it. It adds enormous operational complexity and makes cross-shard transactions nearly impossible. Try vertical scaling, read replicas, and caching first.
+
+## CAP Theorem
+
+In distributed systems, CAP refers to three properties:
+
+- **Consistency (C):** every read receives the most recent write (or an error), so all nodes present the same logical value.
+- **Availability (A):** every request receives a non-error response, even if that response may not reflect the latest write.
+- **Partition Tolerance (P):** the system continues operating despite network splits where nodes cannot communicate reliably.
 
 ![CAP Theorem](/blog-umbertodomenico-ciccia/images/system-design-notes/cap-theorem.png)
 
-| Property | Description |
-|---|---|
-| **Consistency** | All replicas see the same data |
-| **Availability** | System works under failure |
-| **Partition Tolerance** | System continues operating with network partitions |
+```mermaid
+graph TD
+    CAP{CAP Theorem}
+    CAP --> C[Consistency\nAll nodes see same data]
+    CAP --> A[Availability\nSystem always responds]
+    CAP --> P[Partition Tolerance\nWorks despite network splits]
 
-> Systems can guarantee **only two** of the three properties at the same time.
+    C & P --> CP[CP Systems\nZookeeper, HBase,\nPostgreSQL]
+    A & P --> AP[AP Systems\nCassandra, CouchDB,\nDynamoDB default]
+    C & A --> CA[CA Systems\nOnly possible with\nno partitions]
+
+    style CP fill:#4a90d9,color:#fff
+    style AP fill:#e67e22,color:#fff
+    style CA fill:#95a5a6,color:#fff
+```
+
+Why can you only guarantee two properties at once? During a network partition, nodes are split into groups that cannot talk to each other. At that moment, you must choose:
+- keep serving traffic on both sides (**Availability**) and risk divergent data (**weaken Consistency**), or
+- reject operations on one side until quorum is restored (**Consistency**) and sacrifice immediate responses (**weaken Availability**).
+
+| System | Type | Why |
+|---|---|---|
+| PostgreSQL / MySQL | CP | Refuses writes during partition to stay consistent |
+| Apache Cassandra | AP | Accepts writes during partition, syncs later |
+| Apache Zookeeper | CP | Stops accepting writes if quorum is lost |
+| CouchDB | AP | Multi-master, eventual consistency |
+| HBase | CP | Built on HDFS, prioritizes consistency |
+| DynamoDB | AP (tunable) | Adjustable consistency per request |
+
+CAP explains behavior during partitions, but real systems also optimize for normal operation. **PACELC** extends CAP with latency trade-offs:
+
+`if Partition → (Availability vs. Consistency) else (Latency vs. Consistency)`
+
+Examples:
+- **DynamoDB:** often described as **PA/EL** (favoring availability under partition and latency when healthy).
+- **Spanner:** often described as **PC/EC** (favoring consistency in both partitioned and healthy scenarios).
+
+> 📖 **Deep Dive:** Read the original Dynamo paper for a real-world AP system: [Amazon Dynamo (2007)](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf)
+
+## Message Queues & Event Streaming
+
+Asynchronous messaging is a core scaling pattern:
+- It decouples producers from consumers.
+- It absorbs traffic spikes through buffering.
+- It enables fan-out, where one event triggers many downstream services.
+
+| Guarantee | Description | Risk |
+|---|---|---|
+| At-most-once | Fire and forget | Data loss possible |
+| At-least-once | Retry until ACK | Duplicates possible |
+| Exactly-once | Idempotent + transactional | Most expensive |
+
+| Feature | Kafka | RabbitMQ | SQS |
+|---|---|---|---|
+| Model | Log / pull | Queue / push | Queue / pull |
+| Ordering | Partition-level | Per-queue | FIFO queue option |
+| Retention | Configurable (days/weeks) | Until consumed | Up to 14 days |
+| Throughput | Very high | High | High |
+| Replay | Yes (seek offset) | No | No |
+| Best for | Event streaming, analytics | Task queues, microservices | Serverless, AWS-native |
+
+In Kafka, a **consumer group** lets multiple consumers share work: each partition is assigned to one consumer in the group, enabling parallel processing without duplicate consumption inside that group.
+
+```mermaid
+graph LR
+    Producer -->|publish event| Topic[Kafka Topic\norder.placed]
+    Topic --> CG1[Consumer Group:\nEmail Service]
+    Topic --> CG2[Consumer Group:\nInventory Service]
+    Topic --> CG3[Consumer Group:\nAnalytics Service]
+    CG1 --> Email[Send confirmation\nemail]
+    CG2 --> Inv[Decrease stock\ncount]
+    CG3 --> DW[Write to\ndata warehouse]
+```
+
+## Observability
+
+Observability tells you not just that a system is failing, but where and why it is failing.
+
+> 💡 **Tip:** Instrument your services with **OpenTelemetry** from day one — it's vendor-neutral and lets you switch backends (Jaeger, Zipkin, Honeycomb) without changing your code.
+
+### The Three Pillars
+
+| Pillar | What it answers | Tool examples |
+|---|---|---|
+| **Logs** | What happened? | ELK Stack, Loki, Splunk |
+| **Metrics** | How is the system performing over time? | Prometheus, Datadog, CloudWatch |
+| **Traces** | Where did a request spend its time? | Jaeger, Zipkin, OpenTelemetry |
+
+### Golden Signals (Google SRE)
+
+- **Latency** — time to serve a request (distinguish success vs. error latency)
+- **Traffic** — demand on the system (req/sec)
+- **Errors** — rate of failed requests (4xx/5xx)
+- **Saturation** — how "full" the service is (CPU %, memory %, queue depth)
+
+### Prometheus + Grafana Stack
+
+- Prometheus scrapes `/metrics` endpoints using a pull model.
+- Alertmanager fires alerts when thresholds are crossed.
+- Grafana visualizes time-series data and dashboards.
+
+```python
+from prometheus_client import Counter, start_http_server
+
+REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint'])
+
+def handle_request(method, endpoint):
+    REQUEST_COUNT.labels(method=method, endpoint=endpoint).inc()
+    # ... handle request
+
+start_http_server(8000)  # exposes /metrics on port 8000
+```
+
+## Further Reading & Resources
+
+### 📚 Books
+- <a href="https://dataintensive.net">*Designing Data-Intensive Applications*</a> — Martin Kleppmann — the definitive book on distributed systems
+- <a href="https://bytebytego.com">*System Design Interview Vol. 1 & 2*</a> — Alex Xu — practical interview preparation
+- *The Art of Scalability* — Abbott & Fisher — organizational and technical scaling
+
+### 🌐 Free Online Resources
+- <a href="https://github.com/donnemartin/system-design-primer">System Design Primer</a> — 240k+ GitHub stars, comprehensive guide
+- <a href="https://bytebytego.com">ByteByteGo Newsletter</a> — weekly system design deep dives
+- <a href="https://sre.google/sre-book/table-of-contents/">Google SRE Book</a> — free, authoritative guide to running production systems
+- <a href="https://martinfowler.com/architecture/">Martin Fowler — Patterns of Enterprise Architecture</a> — architectural patterns explained
+- <a href="http://highscalability.com">High Scalability Blog</a> — real-world architecture case studies
+
+### 📄 Foundational Papers
+- <a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Amazon Dynamo (2007)</a> — the paper that defined modern AP databases
+- <a href="https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/">Google Bigtable (2006)</a> — wide-column store at planetary scale
+- <a href="https://research.google/pubs/spanner-googles-globally-distributed-database/">Google Spanner (2012)</a> — globally distributed CP database
+
+### 🛠️ Practice
+- <a href="https://excalidraw.com">Excalidraw</a> — whiteboard diagrams for design interviews
+- <a href="https://www.pramp.com">Pramp</a> — free mock system design interviews
