@@ -8,23 +8,23 @@ tags: ["easy-mlops", "MLOps", "machine-learning", "DevOps", "FastAPI", "scikit-l
 categories: ["MLOps", "Engineering"]
 authors: ["Umberto Domenico Ciccia"]
 canonicalURL: "https://github.com/umbertocicciaa/easy-mlops"
-description: "easy-mlops is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime—learn how to use easy-mlops step-by-step."
+description: "easy-mlops is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime,learn how to use easy-mlops step-by-step."
 keywords: ["easy-mlops", "mlops-pipeline", "distributed-runtime", "ml-deployment", "observability"]
 ---
 
 ## **10 Powerful Reasons “easy-mlops” Makes Production ML Ridiculously Simple (Guide + Commands)**
 
-**SEO Meta Description:** **easy-mlops** is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime—learn how to use **easy-mlops** step-by-step with examples and commands.
+**SEO Meta Description:** **easy-mlops** is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime,learn how to use **easy-mlops** step-by-step with examples and commands.
 
 ---
 
 ## **What is easy-mlops?**
 
-**easy-mlops** is an opinionated, batteries-included framework that wraps the end-to-end machine learning operations lifecycle—data preparation, training, deployment, and observability—behind a consistent Python API and an ergonomic CLI. It also ships with a distributed runtime (FastAPI master + worker agents) so you can offload long tasks and keep your terminal free while the system coordinates the work.
+**easy-mlops** is an opinionated, batteries-included framework that wraps the end-to-end machine learning operations lifecycle,data preparation, training, deployment, and observability,behind a consistent Python API and an ergonomic CLI. It also ships with a distributed runtime (FastAPI master + worker agents) so you can offload long tasks and keep your terminal free while the system coordinates the work.
 
 ### **Why it exists: solving the MLOps pain**
 
-Most ML teams spend too much time gluing tools, writing one-off scripts, and chasing broken pipelines. **easy-mlops** targets those “plumbing” tasks: one command to preprocess, train, deploy, and generate a monitoring report—repeatably, with versioned artifacts and sensible defaults. The latest release listed on GitHub is **v0.4.0 (October 18, 2025)**, and the project publishes live docs with architecture and quick-start guides.
+Most ML teams spend too much time gluing tools, writing one-off scripts, and chasing broken pipelines. **easy-mlops** targets those “plumbing” tasks: one command to preprocess, train, deploy, and generate a monitoring report,repeatably, with versioned artifacts and sensible defaults. The latest release listed on GitHub is **v0.4.0 (October 18, 2025)**, and the project publishes live docs with architecture and quick-start guides.
 
 ---
 
@@ -40,7 +40,7 @@ The CLI submits tasks to a **master service** (FastAPI/uvicorn) that assigns job
 
 ### **Composable preprocessing, training, deployment, observability**
 
-Each stage is pluggable through registries—swap encoders, training backends (scikit-learn, neural networks, or custom), deployment hooks, and monitoring sinks.
+Each stage is pluggable through registries,swap encoders, training backends (scikit-learn, neural networks, or custom), deployment hooks, and monitoring sinks.
 
 ### **Reproducible, artifact-first deployments**
 
@@ -159,7 +159,7 @@ training:
   cv_folds: 5
 ```
 
-Pick a backend and evaluation setup that fits your problem—start with scikit-learn and graduate to custom backends when needed.
+Pick a backend and evaluation setup that fits your problem,start with scikit-learn and graduate to custom backends when needed.
 
 ### **Deployment settings (endpoints, artifact paths)**
 
@@ -234,7 +234,7 @@ GitHub Actions run on multiple OSes, enforce formatting, test the code, and publ
 5. **Predict** on new data with `predict`.
 6. **Observe** using `observe` to get a monitoring report and status.
 
-This repeatable flow lets you iterate safely—every run is versioned and auditable.
+This repeatable flow lets you iterate safely,every run is versioned and auditable.
 
 ---
 
@@ -245,14 +245,14 @@ This repeatable flow lets you iterate safely—every run is versioned and audita
 * **Extensibility:** Registries give you escape hatches without forking the core. If your stack needs advanced experiment tracking (e.g., MLflow) or pipeline schedulers (e.g., Dagster), you can integrate them alongside or downstream. See Dagster’s ML guides for how schedulers manage model refreshes and metadata.
 
 **When easy-mlops shines:** tabular problems, small to medium teams, rapid prototyping to production with basic monitoring.
-**When to extend:** heavy experiment tracking, data lineage across teams, or complex multimodal/streaming workloads—use the extensibility hooks or pair with specialized platforms.
+**When to extend:** heavy experiment tracking, data lineage across teams, or complex multimodal/streaming workloads,use the extensibility hooks or pair with specialized platforms.
 
 ---
 
 ## **FAQ**
 
 **1) What problems does easy-mlops actually solve?**
-It standardizes the messy parts—preprocessing, training, deployment, and basic observability—so you can ship models faster with fewer moving pieces.  
+It standardizes the messy parts,preprocessing, training, deployment, and basic observability,so you can ship models faster with fewer moving pieces.  
 
 **2) Do I need the distributed runtime for every project?**
 No. You can embed `MLOpsPipeline` directly in Python. Use the master–worker runtime when jobs are long-running or you need parallelism.
@@ -267,7 +267,7 @@ Start with scikit-learn; switch to neural networks or plug in your own callable 
 Enable metric tracking and prediction logging in YAML, set alert thresholds, and generate an observability report with `observe`. You can also build custom sinks.
 
 **6) Is there documentation and an active release cadence?**
-Yes—there’s a dedicated docs site and a recent **v0.4.0 (Oct 18, 2025)** release listed on GitHub.  
+Yes,there’s a dedicated docs site and a recent **v0.4.0 (Oct 18, 2025)** release listed on GitHub.  
 
 **7) Can I CI/CD this?**
 The repo includes Makefile tasks and GitHub Actions to test, lint, build docs, and publish artifacts on tagged releases.

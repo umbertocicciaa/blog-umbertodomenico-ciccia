@@ -9,7 +9,7 @@ tags: ["Kubernetes", "CKA", "Certification", "DevOps", "Cloud Native"]
 description: "My step-by-step study plan, practice routine, and exam-day strategy for earning the CKA."
 ---
 
-I’ve just passed the **CKA**. 🎉 Here’s exactly how I prepared, what I practiced, how I set up my terminal, and the mindset I used on exam day. No spoilers, no NDA violations—just the process that worked for me.
+I’ve just passed the **CKA**. 🎉 Here’s exactly how I prepared, what I practiced, how I set up my terminal, and the mindset I used on exam day. No spoilers, no NDA violations,just the process that worked for me.
 
 ## TL;DR
 
@@ -22,24 +22,24 @@ I’ve just passed the **CKA**. 🎉 Here’s exactly how I prepared, what I pra
 
 ## My 4-Week Study Plan
 
-### Week 1 — Core Workloads & Kubectl
+### Week 1, Core Workloads & Kubectl
 
 * Pods, Deployments, DaemonSets, Jobs/CronJobs
 * Services (ClusterIP/NodePort/LoadBalancer), Probes, ConfigMaps, Secrets
 * Hands-on: create → tweak → roll back → scale
 
-### Week 2 — Cluster Admin Basics
+### Week 2, Cluster Admin Basics
 
 * Control plane components, kubelet & static Pods, kubeadm basics
 * Node ops: **cordon/drain/uncordon**, taints/tolerations
 * Backups (etcd snapshot/restore concepts), upgrades flow
 
-### Week 3 — Networking & Storage
+### Week 3, Networking & Storage
 
 * CNI basics, NetworkPolicies, Ingress
 * StorageClasses, PV/PVC, CSI, access modes, reclaim policies
 
-### Week 4 — Security & Troubleshooting
+### Week 4, Security & Troubleshooting
 
 * RBAC (Roles, ClusterRoles, Bindings), ServiceAccounts
 * Scheduling (affinity/anti-affinity, topology spread), resources/limits
@@ -162,7 +162,7 @@ k get events -A --sort-by=.lastTimestamp
 
 3. **Scaffold → apply → verify.** Imperative to YAML, edit, `k apply -f`, then `k get/describe/logs`.
 4. **Validate early and often.** If a task expects a Service/label/annotation, *prove it exists*.
-5. **Bookmark hard tasks.** Don’t stall—come back with fresh eyes.
+5. **Bookmark hard tasks.** Don’t stall,come back with fresh eyes.
 6. **Leave time to re-verify.** A quick sweep at the end can earn easy points.
 
 ---
@@ -252,7 +252,7 @@ spec:
 * The official **Kubernetes documentation** (use it constantly while practicing).
 * A solid **CKA course** to structure topics and labs.
 * A **practice exam/lab platform** to simulate pressure and timing.
-* Your own **notes and one-liners**—the fastest reference you’ll have.
+* Your own **notes and one-liners**,the fastest reference you’ll have.
 
 > Tip: Before the exam, review the current exam policies and allowed resources on the CNCF/LF pages to avoid surprises.
 
@@ -260,6 +260,6 @@ spec:
 
 ## Final Thoughts
 
-CKA rewards **hands-on fluency**. If you can create, inspect, and fix Kubernetes resources quickly—while staying calm—you’re already most of the way there. Build muscle memory, keep a tight feedback loop, and treat the exam as a series of small, verifiable tasks.
+CKA rewards **hands-on fluency**. If you can create, inspect, and fix Kubernetes resources quickly,while staying calm,you’re already most of the way there. Build muscle memory, keep a tight feedback loop, and treat the exam as a series of small, verifiable tasks.
 
-If you want, I can tailor this post with your exact timeline, tools, or favorite resources—just share a few details and I’ll weave them in.
+If you want, I can tailor this post with your exact timeline, tools, or favorite resources,just share a few details and I’ll weave them in.

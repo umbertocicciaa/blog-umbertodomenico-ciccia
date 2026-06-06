@@ -28,7 +28,7 @@ Here’s the exact roadmap I followed:
 KodeKloud's KCNA course was my primary resource. It explained cloud-native concepts clearly and offered labs that mimicked real-world Kubernetes environments.
 
 - **Why it helped**: Balanced theory and hands-on labs.
-- **Pro tip**: Don’t just watch—complete every lab multiple times.
+- **Pro tip**: Don’t just watch,complete every lab multiple times.
 
 👉 [https://kodekloud.com/courses/kcna/](https://kodekloud.com/courses/kcna/)
 
@@ -61,7 +61,7 @@ I reinforced my knowledge by solving KCNA-focused quiz questions on Udemy.
 
 ## Exam-Day Tips
 
-- Time management is key—aim to finish the first pass in 45–50 minutes.
+- Time management is key,aim to finish the first pass in 45–50 minutes.
 - Flag difficult questions and return to them after the first round.
 - Trust your preparation and don't second-guess easy answers.
 

@@ -5,14 +5,14 @@ draft: false
 searchable: true
 tags: ["mlops", "aws", "sagemaker", "gitops", "kubernetes", "cicd", "terraform"]
 categories: ["Cloud Computing", "DevOps", "Machine Learning"]
-summary: "A complete walkthrough of building a production-grade MLOps pipeline using AWS Glue, SageMaker, Terraform, and Kubernetes — with automated CI/CD and GitOps for infrastructure and frontend deployment."
+summary: "A complete walkthrough of building a production-grade MLOps pipeline using AWS Glue, SageMaker, Terraform, and Kubernetes, with automated CI/CD and GitOps for infrastructure and frontend deployment."
 ---
 
 ## MlOps
 
 ## Architecture
 
-In this project, I built a full-stack MLOps pipeline using AWS services and modern DevOps practices, integrating CI/CD pipelines, GitOps workflows, and Kubernetes deployment. Here's a deep dive into how the whole system works, from data preprocessing to model deployment — all automated and infrastructure-as-code.
+In this project, I built a full-stack MLOps pipeline using AWS services and modern DevOps practices, integrating CI/CD pipelines, GitOps workflows, and Kubernetes deployment. Here's a deep dive into how the whole system works, from data preprocessing to model deployment, all automated and infrastructure-as-code.
 
 ---
 
@@ -69,7 +69,7 @@ This enables real-time user interaction and visualization.
 
 ## ⚙️ Infrastructure Automation with Terraform
 
-All AWS resources — Glue, Lambda, S3, SageMaker, IAM, EventBridge — are managed via Terraform. The infrastructure code is modular, reusable, and version-controlled.
+All AWS resources, Glue, Lambda, S3, SageMaker, IAM, EventBridge, are managed via Terraform. The infrastructure code is modular, reusable, and version-controlled.
 
 ### 🌀 GitOps for IaC
 

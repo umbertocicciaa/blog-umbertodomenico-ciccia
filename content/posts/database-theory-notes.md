@@ -10,17 +10,17 @@ math: true
 
 ## Introduction
 
-Databases are at the heart of virtually every software system — from web applications to financial platforms to machine learning pipelines. But how do they actually work? What happens when you run a `SELECT` query? How are rows stored on disk? How do multiple transactions run concurrently without corrupting data?
+Databases are at the heart of virtually every software system, from web applications to financial platforms to machine learning pipelines. But how do they actually work? What happens when you run a `SELECT` query? How are rows stored on disk? How do multiple transactions run concurrently without corrupting data?
 
 This post is a comprehensive guide to **database theory**, covering the full lifecycle of database design and operation: from conceptual modeling to physical storage, from SQL queries to concurrency control. Whether you are studying for an exam, preparing for a systems design interview, or simply curious about what happens beneath the ORM layer, this guide has you covered.
 
 We will walk through five major topics:
 
-1. **Database Design** — conceptual, logical, and physical modeling
-2. **Relational Algebra** — the mathematical foundation of queries
-3. **SQL (MySQL)** — practical query language
-4. **Storage Organization** — how data lives on disk (hashing, trees, indexes)
-5. **Transactions** — ACID properties, serializability, and locking
+1. **Database Design**, conceptual, logical, and physical modeling
+2. **Relational Algebra**, the mathematical foundation of queries
+3. **SQL (MySQL)**, practical query language
+4. **Storage Organization**, how data lives on disk (hashing, trees, indexes)
+5. **Transactions**, ACID properties, serializability, and locking
 
 ---
 
@@ -30,7 +30,7 @@ Designing a database is a structured process that moves through three phases: **
 
 ### 1.1 Conceptual Design
 
-Conceptual design takes **functional requirements** from the user and produces an **Entity-Relationship (E/R) schema** — a diagram that represents entities and the relationships between them.
+Conceptual design takes **functional requirements** from the user and produces an **Entity-Relationship (E/R) schema**, a diagram that represents entities and the relationships between them.
 
 #### Entity
 
@@ -48,7 +48,7 @@ An **entity** represents a self-standing concept (like *Student*, *Course*, or *
 
 #### Relationship
 
-A **relationship** between two or more entities represents the mathematical concept of a relation between two or more sets. A relationship between two sets is defined by the **Cartesian product** — the set of all possible pairs $(e_1, e_2)$ such that $e_1$ belongs to the first set and $e_2$ belongs to the second.
+A **relationship** between two or more entities represents the mathematical concept of a relation between two or more sets. A relationship between two sets is defined by the **Cartesian product**, the set of all possible pairs $(e_1, e_2)$ such that $e_1$ belongs to the first set and $e_2$ belongs to the second.
 
 ```
 ┌──────────┐         ┌──────────────┐         ┌──────────┐
@@ -100,7 +100,7 @@ There are three types of keys:
 
 #### Generalization
 
-A **generalization** is a link between two entities — a **parent** and a **child**. Everything belonging to the parent is inherited by the child. Additionally, every occurrence of the child is also an occurrence of the parent.
+A **generalization** is a link between two entities, a **parent** and a **child**. Everything belonging to the parent is inherited by the child. Additionally, every occurrence of the child is also an occurrence of the parent.
 
 Generalizations have two key properties:
 
@@ -186,35 +186,35 @@ E2(Ae21, Ae22)
 R(Ae11, Ae21, Ar)       -- Separate relationship table
 ```
 
-**One-to-Many (1:N) — Mandatory:**
+**One-to-Many (1:N), Mandatory:**
 
 ```
 E1(Ae11, Ae12, Ae21, Ar) -- Foreign key absorbed into the "many" side
 E2(Ae21, Ae22)
 ```
 
-**One-to-Many (1:N) — Optional:**
+**One-to-Many (1:N), Optional:**
 
 ```
 E1(Ae11, Ae12, Ae21*, Ar*) -- Nullable foreign key on the "many" side
 E2(Ae21, Ae22)
 ```
 
-**One-to-One (1:1) — Mandatory:**
+**One-to-One (1:1), Mandatory:**
 
 ```
 E1(Ae11, Ae12, Ae21, Ar)   -- Merge into one side
 E2(Ae21, Ae22)
 ```
 
-**One-to-One (1:1) — Optional (single side):**
+**One-to-One (1:1), Optional (single side):**
 
 ```
 E1(Ae11, Ae12, Ae21, Ar)   -- Always merge from the 1:1 side
 E2(Ae21, Ae22)
 ```
 
-**One-to-One (1:1) — Optional (both sides):**
+**One-to-One (1:1), Optional (both sides):**
 
 ```
 E1(Ae11, Ae12, Ae21*, Ar*) -- Nullable foreign key on either side
@@ -235,7 +235,7 @@ There are three methods for translating generalizations into the relational mode
 
 ### 1.3 Physical Design
 
-Physical design takes the **database schema** as input and produces a **physical schema** — i.e. how data is actually stored on disk. This topic is covered in depth in the [Storage Organization](#4-storage-organization-physical-design) section below.
+Physical design takes the **database schema** as input and produces a **physical schema**, i.e. how data is actually stored on disk. This topic is covered in depth in the [Storage Organization](#4-storage-organization-physical-design) section below.
 
 ---
 
@@ -250,7 +250,7 @@ Two key properties of relational algebra operators:
 | Property | Description |
 |----------|-------------|
 | **Monadic** | An operator that takes a single argument (one relation) |
-| **Reentrant** | An operator that returns a result of the same type as its input — takes a relation, returns a relation |
+| **Reentrant** | An operator that returns a result of the same type as its input, takes a relation, returns a relation |
 
 The reentrant property is what makes relational algebra so powerful: you can **chain operators** together, composing complex queries from simple building blocks.
 
@@ -286,7 +286,7 @@ The **join** operator filters the Cartesian product of two relations according t
 
 $$R \bowtie_{R.id = S.id} S$$
 
-This is arguably the most important operator in relational algebra — it lets you combine data from multiple relations based on matching keys.
+This is arguably the most important operator in relational algebra, it lets you combine data from multiple relations based on matching keys.
 
 ---
 
@@ -370,7 +370,7 @@ FROM Customers;
 
 ### 3.6 WHERE (Selection)
 
-The `WHERE` clause filters tuples from the table specified in `FROM` according to a condition — analogous to the **selection** operator.
+The `WHERE` clause filters tuples from the table specified in `FROM` according to a condition, analogous to the **selection** operator.
 
 ```sql
 SELECT C1.CustomerName, C1.City
@@ -492,9 +492,9 @@ ORDER BY Price ASC;
 
 ## 4. Storage Organization (Physical Design)
 
-This section covers the **physical design** of databases — how tuples are actually stored on **secondary memory** (disk) to guarantee persistence (non-volatility).
+This section covers the **physical design** of databases, how tuples are actually stored on **secondary memory** (disk) to guarantee persistence (non-volatility).
 
-**Organizing tuples in memory by key** means associating — through a function — the key of a tuple to the page that contains it.
+**Organizing tuples in memory by key** means associating, through a function, the key of a tuple to the page that contains it.
 
 Organization can be classified along two dimensions:
 
@@ -556,13 +556,13 @@ Open addressing variants:
 
 | Variant | Problem |
 |---------|---------|
-| **Linear probing** | Suffers from *primary clustering* — groups of adjacent keys form clusters |
-| **Quadratic probing** | Suffers from *secondary clustering* — equal keys end up in the same position |
+| **Linear probing** | Suffers from *primary clustering*, groups of adjacent keys form clusters |
+| **Quadratic probing** | Suffers from *secondary clustering*, equal keys end up in the same position |
 | **Double hashing** | Uses a second hash function to determine the probe step |
 
 **Disadvantages of static hashing:**
 - Cannot perform **range searches**
-- **Static allocation** — fixed number of pages
+- **Static allocation**, fixed number of pages
 
 ---
 
@@ -593,7 +593,7 @@ where $r$ is the number of doublings performed so far (initially $r = 0$).
 
 **Disadvantages:**
 - Must always double the entire vector
-- Overflowed keys always end up either in the **old position** or **M positions ahead** — leading to wasted pages
+- Overflowed keys always end up either in the **old position** or **M positions ahead**, leading to wasted pages
 
 ---
 
@@ -696,7 +696,7 @@ $$h \leq \log_{\lceil M/2 \rceil}\left(\frac{n+1}{2}\right)$$
 
 B⁺-trees are a variant of B-trees. The properties are the same, but with one critical difference:
 
-> Internal nodes store **only keys and child pointers** — they do **not** store pointers to the actual data records. Only **leaf nodes** contain pointers to the tuples, and the leaves are linked together as a **bidirectional linked list**.
+> Internal nodes store **only keys and child pointers**, they do **not** store pointers to the actual data records. Only **leaf nodes** contain pointers to the tuples, and the leaves are linked together as a **bidirectional linked list**.
 
 ```
             ┌────────────┐
@@ -713,7 +713,7 @@ B⁺-trees are a variant of B-trees. The properties are the same, but with one c
 
 ---
 
-### 4.3 Secondary Key Organization — Indexes
+### 4.3 Secondary Key Organization, Indexes
 
 Secondary key organization is achieved through **indexes**.
 
@@ -736,7 +736,7 @@ A **non-clustered index** is a data structure that maps each search key (or grou
 #### Disadvantages
 
 - Can **slow down** insert, update, and delete operations (because the index must also be updated)
-- Indexes are **stored on disk** too — they consume storage space
+- Indexes are **stored on disk** too, they consume storage space
 
 ---
 
@@ -750,14 +750,14 @@ Transactions must satisfy four fundamental properties, known as **ACID**:
 
 | Property | Description |
 |----------|-------------|
-| **Atomicity** | A transaction is an atomic operation — either it executes entirely, or if interrupted, all changes are rolled back |
+| **Atomicity** | A transaction is an atomic operation, either it executes entirely, or if interrupted, all changes are rolled back |
 | **Consistency** | A transaction must leave the database in a consistent state (all constraints satisfied), whether it succeeds or fails |
 | **Isolation** | A transaction must operate as if it were isolated from all other transactions |
 | **Durability** | The effects of a successfully committed transaction must persist permanently |
 
 ---
 
-#### Guaranteeing Atomicity — Rollback
+#### Guaranteeing Atomicity, Rollback
 
 When a transaction is **aborted** (terminates with a failure), a **rollback** operation must restore the database to the state it had before the transaction began.
 
@@ -765,15 +765,15 @@ Rollback is made possible by a **log file** that records:
 - The value of each variable **before** and **after** each operation
 - The **transaction ID** responsible for the modification
 
-#### Guaranteeing Durability — Commit
+#### Guaranteeing Durability, Commit
 
 **Durability** is guaranteed by the **commit** operation. Once a commit is executed, the effects of the transaction are permanent and cannot be rolled back.
 
-#### Guaranteeing Isolation — Locks
+#### Guaranteeing Isolation, Locks
 
 **Isolation** is maintained through **locking mechanisms**, discussed in detail below.
 
-#### Guaranteeing Consistency — Serial Execution
+#### Guaranteeing Consistency, Serial Execution
 
 To guarantee consistency, transactions should ideally be executed **in series**. However, as we will see, **serializability** allows concurrent execution while preserving consistency.
 
@@ -781,7 +781,7 @@ To guarantee consistency, transactions should ideally be executed **in series**.
 
 ### 5.2 Scheduler and Schedule
 
-We stated that transactions should be executed in series to maintain consistency. However, serial execution is not efficient — allowing **concurrent execution** of transactions improves both **throughput** and **response time** (considering that the CPU is allocated to transactions in a round-robin fashion).
+We stated that transactions should be executed in series to maintain consistency. However, serial execution is not efficient, allowing **concurrent execution** of transactions improves both **throughput** and **response time** (considering that the CPU is allocated to transactions in a round-robin fashion).
 
 To prevent errors from concurrent execution, we use the concept of **serializability**.
 
@@ -918,7 +918,7 @@ $$\text{R2PL} \implies \text{Transactions are serial in commit order}$$
 #### Locking Protocol Hierarchy
 
 ```
-    R2PL (most restrictive — serial in commit order)
+    R2PL (most restrictive, serial in commit order)
       │
       ▼
     S2PL (guarantees cascadelessness)
@@ -933,13 +933,13 @@ $$\text{R2PL} \implies \text{Transactions are serial in commit order}$$
 
 Understanding how databases work under the hood is essential knowledge for any software engineer. In this post we covered the full journey:
 
-1. **Database design** moves through three phases — conceptual (E/R modeling), logical (relational schema), and physical (disk storage).
+1. **Database design** moves through three phases, conceptual (E/R modeling), logical (relational schema), and physical (disk storage).
 2. **Relational algebra** provides the mathematical foundation: selection, projection, join, rename, and set operations.
 3. **SQL** translates these algebraic concepts into a practical query language with `SELECT`, `WHERE`, `JOIN`, aggregates, `GROUP BY`, and more.
-4. **Storage organization** determines how data physically lives on disk — from simple hashing to sophisticated B⁺-trees and indexes.
+4. **Storage organization** determines how data physically lives on disk, from simple hashing to sophisticated B⁺-trees and indexes.
 5. **Transactions** ensure data integrity through ACID properties, serializability guarantees, and locking protocols.
 
-The next time you run a query, you will know exactly what is happening — from the SQL parser all the way down to the disk blocks and lock managers that make it all work.
+The next time you run a query, you will know exactly what is happening, from the SQL parser all the way down to the disk blocks and lock managers that make it all work.
 
 ---
 

@@ -47,7 +47,7 @@ CRI is compliance with **Open Container Initiative** **OCI**
 
 **ctr**: cli for debug container in containerd
 
-**nerdctl**: cli docker simil es nerdctl run —name redis redis:alpine
+**nerdctl**: cli docker simil es nerdctl run,name redis redis:alpine
 
 #### Crictl
 
@@ -102,7 +102,7 @@ etcdctl get key1
 #### ETCD Versions
 
 ```bash
-etcdctl —version # return version of api and cli
+etcdctl,version # return version of api and cli
 ```
 
 ```bash
@@ -877,14 +877,14 @@ kubectl get sa
 
 #### Authentication to api server
 
-**Static password file**: file csv with username, password, userid, passed to kube-apiserver with —basic-auth-file property on the startup of kube-apiserver.
+**Static password file**: file csv with username, password, userid, passed to kube-apiserver with,basic-auth-file property on the startup of kube-apiserver.
 
 ```bash
 # authentication
 curl -v -k https://master-node-ip:6443/api/v1/pods -u "user1:password"
 ```
 
-Token file: file token, user, userid passed to kube-apiserver with —token-auth-file property on the startup of kube-apiserver.
+Token file: file token, user, userid passed to kube-apiserver with,token-auth-file property on the startup of kube-apiserver.
 
 ```bash
 # authentication

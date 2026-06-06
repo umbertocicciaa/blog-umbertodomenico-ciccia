@@ -29,7 +29,7 @@ These questions were incredibly close to the real exam format and helped me iden
 ### 🧰 Hands-On Lab: My GitHub Automation Lab  
 
 Theory alone isn’t enough, so I practiced by setting up real infrastructure using my [automation-lab GitHub repo](https://github.com/umbertocicciaa/automation-lab).  
-This included writing HCL from scratch, managing state, using backends, and deploying to various environments — the best way to learn is by doing.
+This included writing HCL from scratch, managing state, using backends, and deploying to various environments, the best way to learn is by doing.
 
 ## How I Structured My Study Plan
 
@@ -40,16 +40,16 @@ This included writing HCL from scratch, managing state, using backends, and depl
 
 ## Final Tips
 
-- Read the [official documentation](https://developer.hashicorp.com/terraform/docs) often — it’s what the exam is based on.
-- Learn to debug errors and read `terraform plan` outputs — very test-relevant.
+- Read the [official documentation](https://developer.hashicorp.com/terraform/docs) often, it’s what the exam is based on.
+- Learn to debug errors and read `terraform plan` outputs, very test-relevant.
 - Hands-on practice is key. Build something real, even if it's simple.
 - Understand core concepts like **providers**, **resources**, **data sources**, and **state** deeply.
 
 ## Conclusion
 
-Passing the Terraform Associate wasn’t just about getting a badge — it gave me a solid foundation in infrastructure as code and pushed me to think more modularly and declaratively. I highly recommend this certification if you're on a DevOps, cloud, or platform engineering journey.
+Passing the Terraform Associate wasn’t just about getting a badge, it gave me a solid foundation in infrastructure as code and pushed me to think more modularly and declaratively. I highly recommend this certification if you're on a DevOps, cloud, or platform engineering journey.
 
-Let me know if you’re preparing too — happy to share more tips or resources!
+Let me know if you’re preparing too, happy to share more tips or resources!
 
 ---
 🛠️ Follow my blog for more posts on DevOps, open source, and cloud tech.

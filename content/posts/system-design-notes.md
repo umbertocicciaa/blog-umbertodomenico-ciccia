@@ -16,12 +16,12 @@ toc: true
 
 A typical application is composed of:
 
-- **Build & Deploy Layer** — CI/CD pipeline
-- **Server Layer** — handles incoming requests
-- **Storage Layer** — persists application data (can be external)
-- **Logging Storage Server** — logs all events
-- **Metric Storage Server** — logs all metrics
-- **Alert Server** — alerts when something goes down
+- **Build & Deploy Layer**, CI/CD pipeline
+- **Server Layer**, handles incoming requests
+- **Storage Layer**, persists application data (can be external)
+- **Logging Storage Server**, logs all events
+- **Metric Storage Server**, logs all metrics
+- **Alert Server**, alerts when something goes down
 
 #### Stateless vs Stateful Services
 
@@ -30,8 +30,8 @@ A typical application is composed of:
 
 | | Stateless | Stateful |
 |---|---|---|
-| Horizontal scaling | Trivial — add instances freely | Hard — requires sticky sessions or external state |
-| Fault tolerance | High — any replica serves the request | Low — losing a server loses its session data |
+| Horizontal scaling | Trivial, add instances freely | Hard, requires sticky sessions or external state |
+| Fault tolerance | High, any replica serves the request | Low, losing a server loses its session data |
 | Examples | REST APIs, static servers | WebSocket servers, game servers, video call nodes |
 
 ### User Perspective
@@ -92,7 +92,7 @@ graph LR
 
 ### Metrics for Evaluating Our Design
 
-**Availability** — measures uptime of a system:
+**Availability**, measures uptime of a system:
 
 $$\text{Availability} = \frac{\text{uptime}}{\text{uptime} + \text{downtime}}$$
 
@@ -109,7 +109,7 @@ $$\frac{23 \text{ hours}}{23 \text{ hours} + 1 \text{ hour}} = 96\%$$
 
 > 💡 **Tip:** Each additional nine is roughly 10× harder to achieve. Going from 99.9% to 99.99% often requires redundant infrastructure, active-active deployments, and chaos engineering.
 
-**SLI / SLO / SLA** — worked example:
+**SLI / SLO / SLA**, worked example:
 
 ```
 SLI  = (successful requests / total requests) × 100
@@ -129,7 +129,7 @@ Assuming a 30.44-day average month (\(365.25/12\)): \(0.001 \times 30.44 \times 
 - When the budget is exhausted, all risky changes freeze until the window resets.
 - This creates a healthy tension between reliability (SRE) and feature velocity (Dev).
 
-**Reliability** — measures the probability of a system failing
+**Reliability**, measures the probability of a system failing
 
 #### Reliability
 
@@ -137,24 +137,24 @@ $$\text{MTBF} = \frac{\text{Total uptime}}{\text{Number of failures}} \qquad \te
 
 $$\text{Availability} = \frac{\text{MTBF}}{\text{MTBF} + \text{MTTR}}$$
 
-Improving availability means either increasing MTBF (fewer failures — better code, hardware) or decreasing MTTR (faster recovery — better alerting, runbooks, auto-remediation).
+Improving availability means either increasing MTBF (fewer failures, better code, hardware) or decreasing MTTR (faster recovery, better alerting, runbooks, auto-remediation).
 
-**Fault Tolerance** — measures how much our system can continue working under failure
+**Fault Tolerance**, measures how much our system can continue working under failure
 
-**Redundancy** — measures how much our system is replicated
+**Redundancy**, measures how much our system is replicated
 
-**Throughput** — measures the number of operations in a time frame:
+**Throughput**, measures the number of operations in a time frame:
 
 $$\text{Throughput} = \frac{\text{operations}}{\text{time}} = \frac{\text{queries}}{\text{seconds}} = \frac{\text{bytes}}{\text{seconds}}$$
 
-**Latency** — measured as a **percentile distribution**, not a mean:
+**Latency**, measured as a **percentile distribution**, not a mean:
 
 | Percentile | Meaning |
 |---|---|
 | p50 (median) | Half of requests are faster than this |
 | p95 | 95% of requests are faster than this |
-| p99 | 99% of requests are faster than this — what most users experience at the tail |
-| p999 | 1-in-1000 requests — the "long tail" that affects your biggest/most active users |
+| p99 | 99% of requests are faster than this, what most users experience at the tail |
+| p999 | 1-in-1000 requests, the "long tail" that affects your biggest/most active users |
 
 > 💡 **Tip:** Always design to a p99 target, not a mean. A mean of 50ms can hide a p99 of 2,000ms. Users at the tail are often your highest-value customers (power users making the most requests).
 
@@ -174,7 +174,7 @@ $$\text{Throughput} = \frac{\text{operations}}{\text{time}} = \frac{\text{querie
 
 ![NAT and Port Forwarding](/blog-umbertodomenico-ciccia/images/system-design-notes/port-forwarding.png)
 
-**Router** — sends packages across the network
+**Router**, sends packages across the network
 
 ### Basic Protocols
 
@@ -198,7 +198,7 @@ sequenceDiagram
     C->>S: SYN (seq=x)
     S->>C: SYN-ACK (seq=y, ack=x+1)
     C->>S: ACK (ack=y+1)
-    Note over C,S: Connection established — data transfer begins
+    Note over C,S: Connection established, data transfer begins
 ```
 
 Cost implications:
@@ -206,7 +206,7 @@ Cost implications:
 - HTTPS adds another 1-2 RTTs for the TLS handshake on top
 - This is why connection pooling and HTTP/2 multiplexing matter so much at scale
 
-> 💡 **Tip:** Connection pooling (PgBouncer for Postgres, HikariCP for Java) amortises the TCP + TLS handshake cost across many requests. At scale, a fresh TLS handshake per request can cost 50–100ms — more than the query itself.
+> 💡 **Tip:** Connection pooling (PgBouncer for Postgres, HikariCP for Java) amortises the TCP + TLS handshake cost across many requests. At scale, a fresh TLS handshake per request can cost 50–100ms, more than the query itself.
 
 #### DNS Resolution
 
@@ -230,18 +230,18 @@ sequenceDiagram
 ```
 
 Key system design implications:
-- **TTL controls propagation delay** — low TTL = faster failover, higher DNS load; high TTL = slower failover, less load
-- **GeoDNS** — return different IPs based on the requester's geographic location (closest region)
-- **DNS-based load balancing** — return multiple A records; clients round-robin. Simple but no health checks.
+- **TTL controls propagation delay**, low TTL = faster failover, higher DNS load; high TTL = slower failover, less load
+- **GeoDNS**, return different IPs based on the requester's geographic location (closest region)
+- **DNS-based load balancing**, return multiple A records; clients round-robin. Simple but no health checks.
 
 #### TLS Handshake
 
 TLS adds encryption, authentication, and integrity on top of TCP. Modern TLS 1.3 takes 1 RTT (vs 2 RTTs for TLS 1.2):
 
-1. **ClientHello** — client sends supported cipher suites, TLS version, random nonce
-2. **ServerHello + Certificate** — server chooses cipher, sends its X.509 certificate
-3. **Key Exchange** — both sides derive the same session key using ECDHE (no key transmitted)
-4. **Finished** — both sides confirm encryption is working; data flow begins
+1. **ClientHello**, client sends supported cipher suites, TLS version, random nonce
+2. **ServerHello + Certificate**, server chooses cipher, sends its X.509 certificate
+3. **Key Exchange**, both sides derive the same session key using ECDHE (no key transmitted)
+4. **Finished**, both sides confirm encryption is working; data flow begins
 
 > 💡 **Tip:** TLS termination at a load balancer means internal traffic is unencrypted. For regulated industries (healthcare, finance), use **mTLS** (mutual TLS) internally so every service authenticates both directions.
 
@@ -250,8 +250,8 @@ TLS adds encryption, authentication, and integrity on top of TCP. Modern TLS 1.3
 | Feature | HTTP/1.1 | HTTP/2 | HTTP/3 |
 |---|---|---|---|
 | Transport | TCP | TCP | QUIC (UDP) |
-| Multiplexing | No — one request per connection | Yes — multiple streams per connection | Yes |
-| Head-of-line blocking | Per-connection | TCP-level (one lost packet stalls all streams) | Eliminated — per-stream |
+| Multiplexing | No, one request per connection | Yes, multiple streams per connection | Yes |
+| Head-of-line blocking | Per-connection | TCP-level (one lost packet stalls all streams) | Eliminated, per-stream |
 | Header compression | None | HPACK | QPACK |
 | Connection setup | TCP + TLS = 2 RTT | TCP + TLS = 2 RTT | 0-RTT possible |
 | Best for | Legacy systems | Most modern APIs | Mobile, lossy networks |
@@ -264,21 +264,21 @@ TLS adds encryption, authentication, and integrity on top of TCP. Modern TLS 1.3
 
 ### Client-Server Model
 
-- **Client** — accesses information provided by a server
-- **Server** — provides resources
+- **Client**, accesses information provided by a server
+- **Server**, provides resources
 
 ![Client-Server Model](/blog-umbertodomenico-ciccia/images/system-design-notes/client-server.png)
 
-### RPC — Remote Procedure Call
+### RPC, Remote Procedure Call
 
 The RPC model allows a program to execute code in a different machine or address space.
 
 ![RPC Remote Procedure Call](/blog-umbertodomenico-ciccia/images/system-design-notes/rpc.png)
 
 Key concepts:
-- **Stub** — function proxy on both local and remote server
-- **Marshalling** — packaging parameters into a message ready to be sent
-- **Unmarshalling** — unpacking parameters from the received message
+- **Stub**, function proxy on both local and remote server
+- **Marshalling**, packaging parameters into a message ready to be sent
+- **Unmarshalling**, unpacking parameters from the received message
 
 ### HTTP / HTTPS
 
@@ -307,7 +307,7 @@ Key concepts:
 
 ### WebSockets
 
-WebSockets establish a persistent, full-duplex connection between client and server — unlike REST where each request creates a new connection.
+WebSockets establish a persistent, full-duplex connection between client and server, unlike REST where each request creates a new connection.
 
 ![WebSocket Communication](/blog-umbertodomenico-ciccia/images/system-design-notes/websocket.png)
 
@@ -319,20 +319,20 @@ WebSockets establish a persistent, full-duplex connection between client and ser
 ### API Paradigms
 
 #### REST
-- **Stateless** — server doesn't maintain session state
-- **Pagination** — page through resources
-- **Cacheable** — responses can be cached
-- **Resource-identified** — resources have unique URIs, exchanged in JSON
-- **Layered** — client and server are decoupled; can talk to replicas transparently
+- **Stateless**, server doesn't maintain session state
+- **Pagination**, page through resources
+- **Cacheable**, responses can be cached
+- **Resource-identified**, resources have unique URIs, exchanged in JSON
+- **Layered**, client and server are decoupled; can talk to replicas transparently
 
 #### GraphQL
 
-GraphQL lets clients request exactly the data they need — no over-fetching (getting unused fields) or under-fetching (needing multiple requests for related data).
+GraphQL lets clients request exactly the data they need, no over-fetching (getting unused fields) or under-fetching (needing multiple requests for related data).
 
-**The N+1 Query Problem** — GraphQL's most common performance trap:
+**The N+1 Query Problem**, GraphQL's most common performance trap:
 
 ```python
-# Naive resolver — fires 1 DB query per user (N+1 total)
+# Naive resolver, fires 1 DB query per user (N+1 total)
 def resolve_posts(root, info):
     posts = db.query("SELECT * FROM posts")          # 1 query
     for post in posts:
@@ -343,7 +343,7 @@ def resolve_posts(root, info):
     return posts
 ```
 
-Solution: **DataLoader** — batches all author lookups into a single `SELECT * FROM users WHERE id IN (...)` query.
+Solution: **DataLoader**, batches all author lookups into a single `SELECT * FROM users WHERE id IN (...)` query.
 
 | | REST | GraphQL | gRPC |
 |---|---|---|---|
@@ -365,25 +365,25 @@ Solution: **DataLoader** — batches all author lookups into a single `SELECT * 
 - Built on **HTTP/2**
 
 Cons:
-- **No native browser support** — requires gRPC-Web proxy (Envoy) or gRPC-Web library
-- **Binary protocol** — harder to debug than JSON (need protoc or grpcurl)
-- **Schema evolution rules** — never change field numbers; only add new fields; deprecate with `reserved`
-- **Tight coupling** — both sides must share the `.proto` schema file
+- **No native browser support**, requires gRPC-Web proxy (Envoy) or gRPC-Web library
+- **Binary protocol**, harder to debug than JSON (need protoc or grpcurl)
+- **Schema evolution rules**, never change field numbers; only add new fields; deprecate with `reserved`
+- **Tight coupling**, both sides must share the `.proto` schema file
 
 ### API Design Best Practices
 
-**API Contract** — defines the structure of your API
+**API Contract**, defines the structure of your API
 
 **Handling API changes:**
 - **Adding parameters** → make them optional
 - **Removing parameters** → can break external customers
 
-**Pagination** — limit the number of returned objects:
+**Pagination**, limit the number of returned objects:
 ```
 GET https://api.example.com/v1/users/:id/tweets?limit=10&offset=0
 ```
 
-**HTTP Idempotency** — making the same request multiple times produces the same effect:
+**HTTP Idempotency**, making the same request multiple times produces the same effect:
 
 | Method | Idempotent? |
 |---|---|
@@ -397,10 +397,10 @@ GET https://api.example.com/v1/users/:id/tweets?limit=10&offset=0
 Rate limiting protects backend services from abuse and accidental overload.
 
 Common algorithms:
-- **Token Bucket** — tokens refill at a fixed rate; requests consume tokens. Allows short bursts.
-- **Leaky Bucket** — requests are processed at a fixed rate; excess requests are queued or dropped. Smooths output traffic.
-- **Fixed Window** — count requests per time window (for example, 1000 req/min). Simple but vulnerable to boundary bursts.
-- **Sliding Window** — tracks requests over a rolling window. More accurate than fixed windows, but uses more memory.
+- **Token Bucket**, tokens refill at a fixed rate; requests consume tokens. Allows short bursts.
+- **Leaky Bucket**, requests are processed at a fixed rate; excess requests are queued or dropped. Smooths output traffic.
+- **Fixed Window**, count requests per time window (for example, 1000 req/min). Simple but vulnerable to boundary bursts.
+- **Sliding Window**, tracks requests over a rolling window. More accurate than fixed windows, but uses more memory.
 
 Practical selection guidance:
 - **Token Bucket** when APIs must tolerate short bursts without overwhelming downstream systems.
@@ -432,7 +432,7 @@ header.payload.signature
 // Header
 { "alg": "RS256", "typ": "JWT" }
 
-// Payload (claims — do NOT store sensitive data, it's only base64-encoded)
+// Payload (claims, do NOT store sensitive data, it's only base64-encoded)
 { "sub": "user-123", "roles": ["admin"], "exp": 1742000000 }
 
 // Signature = RS256(base64(header) + "." + base64(payload), private_key)
@@ -520,7 +520,7 @@ Only frequently accessed data resides in cache. Best for **write-heavy systems**
 
 ![Write Through Cache](/blog-umbertodomenico-ciccia/images/system-design-notes/cache-write-through.png)
 
-DB and cache are kept **in sync**. Best for **consistency-critical systems** — financial applications, online transaction processing.
+DB and cache are kept **in sync**. Best for **consistency-critical systems**, financial applications, online transaction processing.
 
 #### Write Back
 
@@ -596,34 +596,34 @@ When a popular cache key expires simultaneously for many concurrent requests, th
 
 Three mitigations:
 
-1. **Mutex / single-flight** — only one request fetches from DB; others wait for the cached result
-2. **Probabilistic early expiration (PER)** — slightly before TTL expires, some requests proactively refresh:
+1. **Mutex / single-flight**, only one request fetches from DB; others wait for the cached result
+2. **Probabilistic early expiration (PER)**, slightly before TTL expires, some requests proactively refresh:
    ```python
    import random, math
    def should_refresh(ttl_remaining, beta=1.0):
        return -math.log(random.random()) * beta > ttl_remaining
    ```
    `beta` controls refresh aggressiveness (higher beta refreshes earlier/more often; typical values are 0.5–2.0) because `-log(random()) * beta` grows with `beta`, so the expression exceeds `ttl_remaining` more often.
-3. **Background refresh** — a background job refreshes cache before TTL expires; serving never misses
+3. **Background refresh**, a background job refreshes cache before TTL expires; serving never misses
 
-> 💡 **Tip:** In Go, `singleflight.Group` and in Java, Guava's `LoadingCache` implement the single-flight pattern out of the box — one request fetches, all others wait for the result.
+> 💡 **Tip:** In Go, `singleflight.Group` and in Java, Guava's `LoadingCache` implement the single-flight pattern out of the box, one request fetches, all others wait for the result.
 
 #### Cache Invalidation Strategies
 
-> 💡 **Tip:** "There are only two hard things in computer science: cache invalidation and naming things." — Phil Karlton
+> 💡 **Tip:** "There are only two hard things in computer science: cache invalidation and naming things.", Phil Karlton
 
 | Strategy | How it works | When to use |
 |---|---|---|
 | TTL expiry | Data expires after N seconds | Tolerable staleness, read-heavy |
 | Event-driven | Write to DB triggers cache delete/update | Strong consistency requirement |
-| Versioned keys | `user:123:v4` — bump version on write | Immutable deployments, CDN busting |
+| Versioned keys | `user:123:v4`, bump version on write | Immutable deployments, CDN busting |
 | Tag-based | Tag cache entries; invalidate by tag | Complex relationships (e.g. all posts by user X) |
 
 #### Cache Penetration & Bloom Filters
 
 Cache penetration: clients repeatedly query keys that don't exist in cache or DB (malicious or buggy). Every request falls through to DB.
 
-Mitigation: **Bloom Filter** — a probabilistic data structure that answers "definitely not in DB" in O(1) with zero false negatives. If the Bloom filter says the key doesn't exist, skip the DB entirely.
+Mitigation: **Bloom Filter**, a probabilistic data structure that answers "definitely not in DB" in O(1) with zero false negatives. If the Bloom filter says the key doesn't exist, skip the DB entirely.
 
 ```
 Request key → Bloom Filter check
@@ -660,25 +660,25 @@ The origin server instructs CDN and browser caches via `Cache-Control`:
 | `no-cache` | Must revalidate with origin before serving |
 | `no-store` | Never cache (sensitive data: banking, health) |
 | `stale-while-revalidate=60` | Serve stale while fetching fresh in background |
-| `immutable` | Content never changes — skip revalidation entirely (versioned assets: `app.v3.js`) |
+| `immutable` | Content never changes, skip revalidation entirely (versioned assets: `app.v3.js`) |
 
-Best practice for static assets: version the filename (`main.abc123.js`), set `Cache-Control: public, max-age=31536000, immutable`. Change the filename on every deploy — zero stale content, infinite cache lifetime.
+Best practice for static assets: version the filename (`main.abc123.js`), set `Cache-Control: public, max-age=31536000, immutable`. Change the filename on every deploy, zero stale content, infinite cache lifetime.
 
 #### Edge Computing
 
 Modern CDNs run code at the edge, eliminating round-trips to the origin entirely:
 
-- **Cloudflare Workers** — V8 JavaScript at 300+ edge locations, <1ms cold start
-- **AWS Lambda@Edge / CloudFront Functions** — Node.js or lightweight JS at the CDN layer
+- **Cloudflare Workers**, V8 JavaScript at 300+ edge locations, <1ms cold start
+- **AWS Lambda@Edge / CloudFront Functions**, Node.js or lightweight JS at the CDN layer
 - **Use cases**: A/B testing without origin round-trip, auth token validation, request rewriting, personalised HTML without a server
 
 #### When NOT to Use a CDN
 
 > ⚠️ **Warning:** CDNs hurt more than they help in these cases:
-> - **Highly personalised responses** — every user gets unique HTML; CDN hit rate approaches 0%
-> - **Sensitive data** — CDN provider can inspect unencrypted content at their edge
-> - **Very high write frequency** — data changing faster than TTL means users always get stale content
-> - **Low-latency internal APIs** — adding CDN hops increases latency for internal traffic
+> - **Highly personalised responses**, every user gets unique HTML; CDN hit rate approaches 0%
+> - **Sensitive data**, CDN provider can inspect unencrypted content at their edge
+> - **Very high write frequency**, data changing faster than TTL means users always get stale content
+> - **Low-latency internal APIs**, adding CDN hops increases latency for internal traffic
 
 ---
 
@@ -767,7 +767,7 @@ A load balancer must know which backends are healthy before routing traffic.
 
 | Type | Mechanism | Pros | Cons |
 |---|---|---|---|
-| Passive | Detect failures from real request errors (5xx, timeouts) | No extra traffic | Slow to detect — real users see errors first |
+| Passive | Detect failures from real request errors (5xx, timeouts) | No extra traffic | Slow to detect, real users see errors first |
 | Active | Periodically probe a `/health` or `/ready` endpoint | Fast detection | Endpoint must be implemented and meaningful |
 
 Health check config (NGINX example):
@@ -780,8 +780,8 @@ upstream backend {
 }
 ```
 
-- `fails=3` — remove backend after 3 consecutive failures
-- `passes=2` — re-add backend after 2 consecutive successes (avoids flapping)
+- `fails=3`, remove backend after 3 consecutive failures
+- `passes=2`, re-add backend after 2 consecutive successes (avoids flapping)
 
 ### Round Robin
 
@@ -852,15 +852,15 @@ Some stateful applications require that a user's requests always reach the same 
 
 Methods:
 - **Cookie-based**: LB injects a `SERVERID` cookie; subsequent requests route to the same server
-- **IP-hash**: already covered in the post — but note that it breaks with NAT (many users share one IP)
+- **IP-hash**: already covered in the post, but note that it breaks with NAT (many users share one IP)
 
-> ⚠️ **Warning:** Sticky sessions undermine the purpose of load balancing — one server can become overloaded if a user's session is expensive. The better solution is to externalize session state to Redis so any server can handle any request.
+> ⚠️ **Warning:** Sticky sessions undermine the purpose of load balancing, one server can become overloaded if a user's session is expensive. The better solution is to externalize session state to Redis so any server can handle any request.
 
 #### Connection Draining
 
 When a backend is being removed (deployment, scale-down), in-flight requests must complete:
 
-1. LB marks backend as "draining" — stops sending new connections
+1. LB marks backend as "draining", stops sending new connections
 2. Existing connections are allowed to finish (configurable timeout, e.g. 30s)
 3. After drain period, backend is removed
 
@@ -872,7 +872,7 @@ The LB itself is a single point of failure. Standard solutions:
 
 - **Active-passive**: primary LB handles traffic; secondary is on standby. Floating IP (VRRP) moves to secondary on failure. Failover time: 1–5s.
 - **Active-active**: both LBs handle traffic; DNS or anycast routes to either. No failover delay; doubles capacity.
-- **Cloud-managed LBs** (AWS ALB, GCP Cloud Load Balancing): Google/AWS manages HA internally — the LB is not a SPOF from your perspective.
+- **Cloud-managed LBs** (AWS ALB, GCP Cloud Load Balancing): Google/AWS manages HA internally, the LB is not a SPOF from your perspective.
 
 ### Layer 4 vs Layer 7 Load Balancing
 
@@ -936,7 +936,7 @@ CREATE TABLE People (
 
 #### Transaction Isolation Levels
 
-ACID's "Isolation" property has four levels — each a trade-off between correctness and concurrency:
+ACID's "Isolation" property has four levels, each a trade-off between correctness and concurrency:
 
 | Level | Dirty Read | Non-Repeatable Read | Phantom Read | Performance |
 |---|---|---|---|---|
@@ -945,14 +945,14 @@ ACID's "Isolation" property has four levels — each a trade-off between correct
 | Repeatable Read | Prevented | Prevented | Possible | Medium (MySQL InnoDB default) |
 | Serializable | Prevented | Prevented | Prevented | Lowest |
 
-> ⚠️ **Warning:** Many ORMs (Hibernate, SQLAlchemy) default to **Read Committed** and do not automatically wrap multi-step operations in a single transaction unless you explicitly define a transaction boundary. Always verify your ORM is actually wrapping writes in a transaction — especially for operations like order creation + inventory decrement.
+> ⚠️ **Warning:** Many ORMs (Hibernate, SQLAlchemy) default to **Read Committed** and do not automatically wrap multi-step operations in a single transaction unless you explicitly define a transaction boundary. Always verify your ORM is actually wrapping writes in a transaction, especially for operations like order creation + inventory decrement.
 
 Definitions:
 - **Dirty read**: reading uncommitted data from another transaction
 - **Non-repeatable read**: re-reading a row mid-transaction returns different values (another TX committed a change)
 - **Phantom read**: re-running a query mid-transaction returns different rows (another TX inserted/deleted)
 
-> 💡 **Tip:** Most applications work correctly at **Read Committed**. Reach for **Serializable** only when financial or inventory correctness is critical — and test performance carefully, as it can reduce throughput by 10–100×.
+> 💡 **Tip:** Most applications work correctly at **Read Committed**. Reach for **Serializable** only when financial or inventory correctness is critical, and test performance carefully, as it can reduce throughput by 10–100×.
 
 #### MVCC (Multi-Version Concurrency Control)
 
@@ -963,7 +963,7 @@ Modern databases (PostgreSQL, MySQL InnoDB) achieve isolation without blocking r
 - Writers create a new row version; readers see the old version concurrently
 - Result: readers never block writers, writers never block readers
 
-This is why `SELECT` in Postgres is almost always non-blocking — it reads from a consistent snapshot, not the live data.
+This is why `SELECT` in Postgres is almost always non-blocking, it reads from a consistent snapshot, not the live data.
 
 ```mermaid
 sequenceDiagram
@@ -977,7 +977,7 @@ sequenceDiagram
     T1->DB: SELECT name FROM users WHERE id=1
     DB->T1: 'Alice' (sees snapshot at txn_id=100, not 101)
     T1->DB: COMMIT
-    Note over T1,DB: T1 read a consistent snapshot — never blocked T2
+    Note over T1,DB: T1 read a consistent snapshot, never blocked T2
 ```
 
 #### Write-Ahead Log (WAL)
@@ -985,10 +985,10 @@ sequenceDiagram
 WAL is the mechanism behind ACID Durability. Before any data page is modified:
 
 1. The change is **written to an append-only log on disk** (the WAL)
-2. The log entry is `fsync`'d — guaranteed to survive a crash
+2. The log entry is `fsync`'d, guaranteed to survive a crash
 3. Only then is the in-memory buffer modified and eventually flushed to the data file
 
-On crash recovery: replay the WAL to reconstruct any uncommitted changes. This is also the foundation of **replication** — replicas stream and replay the WAL from the primary.
+On crash recovery: replay the WAL to reconstruct any uncommitted changes. This is also the foundation of **replication**, replicas stream and replay the WAL from the primary.
 
 > 📖 **Deep Dive:** The PostgreSQL WAL documentation explains the full recovery model: https://www.postgresql.org/docs/current/wal-intro.html
 
@@ -1047,7 +1047,7 @@ Read replicas offload `SELECT` queries from the primary, but introduce replicati
 - **Asynchronous replication**: near-zero write latency; lag typically <1s on healthy networks but can spike to minutes under high write load.
 
 Application implications:
-- After a `POST /orders` (write), don't immediately `GET /orders` from a replica — you may read your own stale write. Use **read-your-writes consistency**: route reads to the primary for a short post-write window keyed by user/session (size this window from measured replication lag + safety margin), or use a consistency token that forces primary reads until replicas catch up.
+- After a `POST /orders` (write), don't immediately `GET /orders` from a replica, you may read your own stale write. Use **read-your-writes consistency**: route reads to the primary for a short post-write window keyed by user/session (size this window from measured replication lag + safety margin), or use a consistency token that forces primary reads until replicas catch up.
 - **Replica lag monitoring**: alert if lag exceeds your SLO. Key metric: `seconds_behind_master` in MySQL, `pg_stat_replication.write_lag` in Postgres.
 
 #### Master-Master Replication
@@ -1061,8 +1061,8 @@ Multiple masters replicate each other and each replicates its own slaves. Ideal 
 
 **Use cases:** massive, high-traffic systems
 
-- **Relational databases** — sharding is done at the application level
-- **NoSQL databases** — horizontal scaling per shard
+- **Relational databases**, sharding is done at the application level
+- **NoSQL databases**, horizontal scaling per shard
 
 | Strategy | How it works | Pros | Cons |
 |---|---|---|---|
@@ -1161,7 +1161,7 @@ graph LR
 
 Observability tells you not just that a system is failing, but where and why it is failing.
 
-> 💡 **Tip:** Instrument your services with **OpenTelemetry** from day one — it's vendor-neutral and lets you switch backends (Jaeger, Zipkin, Honeycomb) without changing your code.
+> 💡 **Tip:** Instrument your services with **OpenTelemetry** from day one, it's vendor-neutral and lets you switch backends (Jaeger, Zipkin, Honeycomb) without changing your code.
 
 ### The Three Pillars
 
@@ -1173,10 +1173,10 @@ Observability tells you not just that a system is failing, but where and why it 
 
 ### Golden Signals (Google SRE)
 
-- **Latency** — time to serve a request (distinguish success vs. error latency)
-- **Traffic** — demand on the system (req/sec)
-- **Errors** — rate of failed requests (4xx/5xx)
-- **Saturation** — how "full" the service is (CPU %, memory %, queue depth)
+- **Latency**, time to serve a request (distinguish success vs. error latency)
+- **Traffic**, demand on the system (req/sec)
+- **Errors**, rate of failed requests (4xx/5xx)
+- **Saturation**, how "full" the service is (CPU %, memory %, queue depth)
 
 ### Prometheus + Grafana Stack
 
@@ -1199,22 +1199,22 @@ start_http_server(8000)  # exposes /metrics on port 8000
 ## Further Reading & Resources
 
 ### 📚 Books
-- <a href="https://dataintensive.net">*Designing Data-Intensive Applications*</a> — Martin Kleppmann — the definitive book on distributed systems
-- <a href="https://bytebytego.com">*System Design Interview Vol. 1 & 2*</a> — Alex Xu — practical interview preparation
-- *The Art of Scalability* — Abbott & Fisher — organizational and technical scaling
+- <a href="https://dataintensive.net">*Designing Data-Intensive Applications*</a>, Martin Kleppmann, the definitive book on distributed systems
+- <a href="https://bytebytego.com">*System Design Interview Vol. 1 & 2*</a>, Alex Xu, practical interview preparation
+- *The Art of Scalability*, Abbott & Fisher, organizational and technical scaling
 
 ### 🌐 Free Online Resources
-- <a href="https://github.com/donnemartin/system-design-primer">System Design Primer</a> — 240k+ GitHub stars, comprehensive guide
-- <a href="https://bytebytego.com">ByteByteGo Newsletter</a> — weekly system design deep dives
-- <a href="https://sre.google/sre-book/table-of-contents/">Google SRE Book</a> — free, authoritative guide to running production systems
-- <a href="https://martinfowler.com/architecture/">Martin Fowler — Patterns of Enterprise Architecture</a> — architectural patterns explained
-- <a href="http://highscalability.com">High Scalability Blog</a> — real-world architecture case studies
+- <a href="https://github.com/donnemartin/system-design-primer">System Design Primer</a>, 240k+ GitHub stars, comprehensive guide
+- <a href="https://bytebytego.com">ByteByteGo Newsletter</a>, weekly system design deep dives
+- <a href="https://sre.google/sre-book/table-of-contents/">Google SRE Book</a>, free, authoritative guide to running production systems
+- <a href="https://martinfowler.com/architecture/">Martin Fowler, Patterns of Enterprise Architecture</a>, architectural patterns explained
+- <a href="http://highscalability.com">High Scalability Blog</a>, real-world architecture case studies
 
 ### 📄 Foundational Papers
-- <a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Amazon Dynamo (2007)</a> — the paper that defined modern AP databases
-- <a href="https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/">Google Bigtable (2006)</a> — wide-column store at planetary scale
-- <a href="https://research.google/pubs/spanner-googles-globally-distributed-database/">Google Spanner (2012)</a> — globally distributed CP database
+- <a href="https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf">Amazon Dynamo (2007)</a>, the paper that defined modern AP databases
+- <a href="https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/">Google Bigtable (2006)</a>, wide-column store at planetary scale
+- <a href="https://research.google/pubs/spanner-googles-globally-distributed-database/">Google Spanner (2012)</a>, globally distributed CP database
 
 ### 🛠️ Practice
-- <a href="https://excalidraw.com">Excalidraw</a> — whiteboard diagrams for design interviews
-- <a href="https://www.pramp.com">Pramp</a> — free mock system design interviews
+- <a href="https://excalidraw.com">Excalidraw</a>, whiteboard diagrams for design interviews
+- <a href="https://www.pramp.com">Pramp</a>, free mock system design interviews

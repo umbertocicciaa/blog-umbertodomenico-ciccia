@@ -6,7 +6,7 @@ searchable: true
 
 ## How to Create a Personal Blog with Hugo and PaperMod 🚀
 
-Setting up a fast, minimalist blog with [Hugo](https://gohugo.io/) and [PaperMod](https://github.com/adityatelange/hugo-PaperMod) is easier than you think. Whether you're writing tutorials, sharing your journey, or just want a place to think in public—this guide will help you spin up your site in no time.
+Setting up a fast, minimalist blog with [Hugo](https://gohugo.io/) and [PaperMod](https://github.com/adityatelange/hugo-PaperMod) is easier than you think. Whether you're writing tutorials, sharing your journey, or just want a place to think in public,this guide will help you spin up your site in no time.
 
 ## 🛠 Prerequisites
 

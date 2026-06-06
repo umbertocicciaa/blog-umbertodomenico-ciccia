@@ -3,7 +3,7 @@ title: "My Raspberry Pi K3s Adventure: Installing Jenkins, Grafana & Prometheus 
 date: 2025-08-10T16:20:00+02:00
 author: "Umberto Domenico Ciccia"
 tags: ["raspberry-pi", "k3s", "jenkins", "grafana", "prometheus", "helm", "devops", "homelab"]
-description: "A hands-on story of how I installed Jenkins, Grafana, and Prometheus on my Raspberry Pi K3s cluster using Helm — with all the wins, struggles, and lessons learned."
+description: "A hands-on story of how I installed Jenkins, Grafana, and Prometheus on my Raspberry Pi K3s cluster using Helm, with all the wins, struggles, and lessons learned."
 searchable: true
 ---
 
@@ -13,7 +13,7 @@ You know that feeling when you’ve just unboxed a couple of Raspberry Pi boards
 Two Raspberry Pi 4s, a mini rack, and a network switch were staring at me, and the idea hit:  
 **“Let’s build a K3s cluster, and on top of it run Jenkins, Grafana, and Prometheus.”**  
 
-Not for production — but for learning, for fun, and for the sheer thrill of watching tiny computers act like a mini data center.
+Not for production, but for learning, for fun, and for the sheer thrill of watching tiny computers act like a mini data center.
 
 ---
 
@@ -23,11 +23,11 @@ First things first, I set up **K3s** on my Raspberry Pi nodes. I used one Pi as 
 
 ## 🔧 Installing Jenkins with Helm (The Persistent, Ingress-Ready Way)
 
-When I started setting up Jenkins, I didn’t want to just spin it up temporarily — I wanted **real persistence** for my jobs and configurations, proper **RBAC** with a Service Account, and an **Ingress** so I could access it without endless port-forwards.
+When I started setting up Jenkins, I didn’t want to just spin it up temporarily, I wanted **real persistence** for my jobs and configurations, proper **RBAC** with a Service Account, and an **Ingress** so I could access it without endless port-forwards.
 
 So I followed the official [Jenkins Kubernetes documentation](https://www.jenkins.io/doc/book/installing/kubernetes/) step-by-step, adapting it for my Raspberry Pi K3s environment.
 
-### Step 1 — Create a PersistentVolume
+### Step 1, Create a PersistentVolume
 
 I created a local path PV on my master node so Jenkins could store all its data:
 
@@ -62,7 +62,7 @@ persitance:
 
 ---
 
-### Step 2 — Create a Service Account
+### Step 2, Create a Service Account
 
 Jenkins needs proper permissions to manage pods and builds inside the cluster.
 
@@ -159,7 +159,7 @@ serviceAccount:
 
 ---
 
-### Step 3 — Customize Helm Values for Ingress
+### Step 3, Customize Helm Values for Ingress
 
 I didn’t want to rely on `kubectl port-forward` forever, so I enabled an Ingress in my Helm values file.
 
@@ -184,7 +184,7 @@ I didn’t want to rely on `kubectl port-forward` forever, so I enabled an Ingre
 
 ---
 
-### Step 4 — Install Jenkins via Helm
+### Step 4, Install Jenkins via Helm
 
 ```bash
 helm repo add jenkins https://charts.jenkins.io
@@ -194,7 +194,7 @@ helm install jenkins jenkins/jenkins -f values.yaml
 
 ---
 
-### Step 5 — Access Jenkins
+### Step 5, Access Jenkins
 
 Since I had Ingress enabled, I just updated my local `/etc/hosts`:
 
@@ -220,14 +220,14 @@ kubectl exec --namespace jenkins -it svc/jenkins -c jenkins \
 💡 **What I Learned:**
 
 * The “quick install” is fine for demos, but taking the time to set up PV, RBAC, and Ingress makes your deployment feel *real*.
-* On Raspberry Pis, **persistence is precious** — one SD card failure can wipe out your CI/CD brain.
+* On Raspberry Pis, **persistence is precious**, one SD card failure can wipe out your CI/CD brain.
 * Ingress saved me from juggling `kubectl port-forward` commands and made Jenkins feel like part of a real infrastructure.
 
 ---
 
 ## 📊 Installing Prometheus & Grafana
 
-Prometheus and Grafana are best friends — metrics and visualization.
+Prometheus and Grafana are best friends, metrics and visualization.
 
 ### Add repo
 
@@ -270,7 +270,7 @@ Open: `http://localhost:3000`
 ## 🧠 The Challenges I Faced
 
 1. **ARM Compatibility:** Some container images just *don’t* have ARM builds. I had to check chart values and override image tags for ARM64 versions.
-2. **Resource Limits:** 4GB Pi RAM is not a lot — tweaking memory requests/limits in Helm values was necessary to avoid OOM kills.
+2. **Resource Limits:** 4GB Pi RAM is not a lot, tweaking memory requests/limits in Helm values was necessary to avoid OOM kills.
 3. **Networking:** A single misconfigured `LoadBalancer` service in K3s can stall everything. Switching to `NodePort` during testing helped.
 4. **Pod Start Time:** On Pis, be ready for *minutes* of startup time for heavier apps like Jenkins.
 
@@ -278,9 +278,9 @@ Open: `http://localhost:3000`
 
 ## 🌱 What I Learned
 
-* **Helm is magic** — one command and you’ve got a whole app running in Kubernetes.
-* **Small hardware teaches big discipline** — limited resources force you to think about efficiency.
-* **Metrics are addictive** — once Grafana dashboards light up with Prometheus data, you want to monitor everything.
+* **Helm is magic**, one command and you’ve got a whole app running in Kubernetes.
+* **Small hardware teaches big discipline**, limited resources force you to think about efficiency.
+* **Metrics are addictive**, once Grafana dashboards light up with Prometheus data, you want to monitor everything.
 
 ---
 
@@ -292,7 +292,7 @@ Absolutely.
 Did I learn more in a weekend than in a month of theory?
 **Also absolutely.**
 
-If you’ve got some Raspberry Pis gathering dust, set them free — make them work, make them struggle, make *yourself* debug at 2AM because a pod won’t start. That’s where the magic happens.
+If you’ve got some Raspberry Pis gathering dust, set them free, make them work, make them struggle, make *yourself* debug at 2AM because a pod won’t start. That’s where the magic happens.
 
 ---
 

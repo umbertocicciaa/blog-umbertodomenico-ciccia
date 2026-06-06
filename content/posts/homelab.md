@@ -8,7 +8,7 @@ searchable: true
 
 ## Introduction
 
-After some tinkering, I decided to build an homebalb with **2-node Raspberry Pi 4 cluster** running [K3s](https://k3s.io/) — one **master** and one **worker** — to learn better Kubernetes and host my own services.  
+After some tinkering, I decided to build an homebalb with **2-node Raspberry Pi 4 cluster** running [K3s](https://k3s.io/), one **master** and one **worker**, to learn better Kubernetes and host my own services.  
 In this post, I’ll walk you through the process: from **hardware setup** to **K3s installation** and **homepage deployment** with ingress access.
 
 ---
@@ -100,7 +100,7 @@ kubectl expose deployment nginx --type=ClusterIP --port=80
 kubectl get svc
 ```
 
-Pods and services deployed correctly — smoke test passed.
+Pods and services deployed correctly, smoke test passed.
 
 ---
 

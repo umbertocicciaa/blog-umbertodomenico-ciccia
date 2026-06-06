@@ -9,7 +9,7 @@ author: ["Umberto Domenico Ciccia"]
 
 ## 🌍 An Inspiring and Hands-On Adventure for SysOps, DevOps, MLOps Enthusiasts
 
-This weekend I joined the **MLSysOps Hackathon** — an intense and rewarding experience for anyone passionate about **SysOps**, **DevOps** and **MLOps**.
+This weekend I joined the **MLSysOps Hackathon**, an intense and rewarding experience for anyone passionate about **SysOps**, **DevOps** and **MLOps**.
 
 It was a powerful reminder of how collaboration and teamwork accelerate innovation: working side by side with talented people from **all over the world** at the Università della Calabria made the journey both exciting and deeply enriching.
 
@@ -17,7 +17,7 @@ It was a powerful reminder of how collaboration and teamwork accelerate innovati
 
 ## 📚 A Valuable Step for AI & ML Growth
 
-Beyond the challenge itself, this hackathon was an incredible opportunity to deepen my understanding of **AI in production** — from **model lifecycle management** to **infrastructure orchestration**. Experiences like this are essential for anyone who wants to master **MLOps** and build real-world, production-ready AI systems.
+Beyond the challenge itself, this hackathon was an incredible opportunity to deepen my understanding of **AI in production**, from **model lifecycle management** to **infrastructure orchestration**. Experiences like this are essential for anyone who wants to master **MLOps** and build real-world, production-ready AI systems.
 
 ---
 
@@ -25,7 +25,7 @@ Beyond the challenge itself, this hackathon was an incredible opportunity to dee
 
 We explored how to design systems capable of continuously **monitoring** both **training** and **infrastructure**, ensuring **models run efficiently across nodes** and **resources**.
 
-This approach enables dynamic adaptation to different workloads and supports training AI models for a variety of use cases — from predictive analytics to intelligent automation — with the reliability and scalability required in production.
+This approach enables dynamic adaptation to different workloads and supports training AI models for a variety of use cases, from predictive analytics to intelligent automation, with the reliability and scalability required in production.
 
 ---
 
@@ -39,16 +39,16 @@ Our challenge: build a policy for bringing **AI models** to **production** in a 
 - 📊 Continuous **monitoring** of both model training and **cluster infrastructure**, enabling dynamic node reallocation when needed
 - 🧩 Designed an approach to train and adapt ML models for diverse real-world use cases
 - 📈 Integrated **real-time metrics & observability** with **Prometheus + Grafana**
-- ⚡️ Enabled **autoscaling** & safe rollouts — cutting manual ops and boosting reliability
+- ⚡️ Enabled **autoscaling** & safe rollouts, cutting manual ops and boosting reliability
 
 ---
 
 ## ⚙️ Tech Stack
 
-- **Kubernetes** — Container orchestration
-- **Prometheus** — Monitoring and alerting
-- **Grafana** — Visualization and dashboards
-- **MLSysOps** — Open source (Apache-2.0)
+- **Kubernetes**, Container orchestration
+- **Prometheus**, Monitoring and alerting
+- **Grafana**, Visualization and dashboards
+- **MLSysOps**, Open source (Apache-2.0)
 
 ---
 
@@ -66,7 +66,7 @@ Huge thanks to **Università della Calabria**, **Raffaele Gravina**, the organiz
 
 ## 🔑 Key Takeaway
 
-The future of **AI** isn't just about better models — it's about **deploying**, **observing** and **scaling** them seamlessly in **production** through great technology and **great teams**.
+The future of **AI** isn't just about better models, it's about **deploying**, **observing** and **scaling** them seamlessly in **production** through great technology and **great teams**.
 
 ---
 

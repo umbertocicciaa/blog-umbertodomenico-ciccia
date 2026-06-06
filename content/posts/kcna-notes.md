@@ -170,7 +170,7 @@ spec:
 #### Scale replicaset
 
 1. Update replicaset yaml number
-2. kubectl scale —replicas=6 -f replica.yaml
+2. kubectl scale,replicas=6 -f replica.yaml
 
 ### Deployments
 

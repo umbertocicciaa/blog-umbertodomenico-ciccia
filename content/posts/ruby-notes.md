@@ -4,11 +4,11 @@ date: 2026-02-09
 tags: [ruby, programming-languages, internals, metaprogramming]
 categories: ["Engineering"]
 searchable: true
-description: "A deep dive into how Ruby works — from syntax fundamentals to object model internals, garbage collection, and metaprogramming."
+description: "A deep dive into how Ruby works, from syntax fundamentals to object model internals, garbage collection, and metaprogramming."
 draft: false
 ---
 
-Ruby is a dynamic, interpreted, object-oriented language designed by Yukihiro "Matz" Matsumoto in the mid-1990s. Its design philosophy prioritizes developer happiness and productivity — Matz famously said Ruby is *"optimized for developer joy."* Under the hood, Ruby is a surprisingly sophisticated language with a rich object model, a multi-phase interpreter pipeline, and powerful metaprogramming capabilities that let you reshape the language itself at runtime.
+Ruby is a dynamic, interpreted, object-oriented language designed by Yukihiro "Matz" Matsumoto in the mid-1990s. Its design philosophy prioritizes developer happiness and productivity, Matz famously said Ruby is *"optimized for developer joy."* Under the hood, Ruby is a surprisingly sophisticated language with a rich object model, a multi-phase interpreter pipeline, and powerful metaprogramming capabilities that let you reshape the language itself at runtime.
 
 These notes cover Ruby from the ground up: the syntax fundamentals, how the interpreter turns your source code into executable instructions, how memory is managed, and the metaprogramming system that makes Ruby one of the most flexible languages in existence.
 
@@ -28,13 +28,13 @@ p "Debug"      # prints the .inspect representation (useful for debugging)
 
 - **`puts`**: calls `.to_s` on the argument, appends `\n`. Returns `nil`.
 - **`print`**: same as `puts` but without the newline.
-- **`p`**: calls `.inspect` on the argument — shows the raw representation (e.g., strings include quotes). Returns the object itself, which makes it useful in method chains during debugging.
+- **`p`**: calls `.inspect` on the argument, shows the raw representation (e.g., strings include quotes). Returns the object itself, which makes it useful in method chains during debugging.
 
 > **Note:** There's also `pp` (pretty-print), introduced in Ruby 2.5 as a built-in, which formats complex objects (hashes, arrays) with indentation for readability.
 
 ### Variables
 
-Ruby uses **duck typing** — variables don't have explicit type declarations. The interpreter infers the type at runtime:
+Ruby uses **duck typing**, variables don't have explicit type declarations. The interpreter infers the type at runtime:
 
 ```ruby
 name    = "Umberto"   # String
@@ -46,7 +46,7 @@ nothing = nil         # NilClass
 
 #### Variable Scopes
 
-Ruby determines variable scope by naming convention — the prefix of a variable name defines where it lives:
+Ruby determines variable scope by naming convention, the prefix of a variable name defines where it lives:
 
 | Prefix | Scope | Example |
 |---|---|---|
@@ -57,9 +57,9 @@ Ruby determines variable scope by naming convention — the prefix of a variable
 | `A-Z` (uppercase start) | Constant | `PI = 3.14159` |
 
 - **Local variables** are scoped to the block, method, or module where they are defined.
-- **Instance variables** belong to a specific object instance — they are the primary way objects hold state.
-- **Class variables** are shared across all instances of a class *and* its subclasses — use with caution, as subclass modifications affect the parent.
-- **Global variables** are accessible everywhere — generally considered bad practice because they introduce hidden coupling.
+- **Instance variables** belong to a specific object instance, they are the primary way objects hold state.
+- **Class variables** are shared across all instances of a class *and* its subclasses, use with caution, as subclass modifications affect the parent.
+- **Global variables** are accessible everywhere, generally considered bad practice because they introduce hidden coupling.
 - **Constants** are meant to be immutable, but Ruby only raises a *warning* (not an error) if you reassign them.
 
 #### Type Casting
@@ -74,8 +74,8 @@ as_string     = back_to_float.to_s    # => "3.0"
 ```
 
 Ruby distinguishes between **explicit** and **implicit** conversion:
-- **Explicit** (`to_i`, `to_s`, `to_f`): lenient — tries its best to convert, returns a default if it can't (e.g., `"hello".to_i` returns `0`).
-- **Implicit** (`to_int`, `to_str`, `to_ary`): strict — only defined on objects that *truly are* that type. Ruby calls these internally when it needs a guaranteed type match. If an object doesn't respond to `to_str`, Ruby raises a `TypeError` instead of silently converting.
+- **Explicit** (`to_i`, `to_s`, `to_f`): lenient, tries its best to convert, returns a default if it can't (e.g., `"hello".to_i` returns `0`).
+- **Implicit** (`to_int`, `to_str`, `to_ary`): strict, only defined on objects that *truly are* that type. Ruby calls these internally when it needs a guaranteed type match. If an object doesn't respond to `to_str`, Ruby raises a `TypeError` instead of silently converting.
 
 ### Strings
 
@@ -97,7 +97,7 @@ puts greeting[1, 3]      # => "ell" (start index, length)
 ```ruby
 name = "Umberto"
 
-# Interpolation (double quotes only — preferred)
+# Interpolation (double quotes only, preferred)
 puts "Hello, #{name}!"         # => Hello, Umberto!
 
 # Concatenation
@@ -117,17 +117,17 @@ name = "Umberto"
 name << " Ciccia"   # => FrozenError: can't modify frozen String
 ```
 
-This is a performance optimization — frozen strings can be deduplicated in memory. Rails and most modern Ruby projects enable this by default. In Ruby 3.x, there are ongoing discussions about making this the default behavior.
+This is a performance optimization, frozen strings can be deduplicated in memory. Rails and most modern Ruby projects enable this by default. In Ruby 3.x, there are ongoing discussions about making this the default behavior.
 
 #### Symbols vs Strings
 
 ```ruby
-:name           # Symbol — immutable, one copy in memory
-"name"          # String — mutable, new object each time
-"name".freeze   # String — immutable but only after freeze is called
+:name           # Symbol, immutable, one copy in memory
+"name"          # String, mutable, new object each time
+"name".freeze   # String, immutable but only after freeze is called
 ```
 
-- **Symbols** are interned — `:name.object_id` always returns the same value. They are ideal for hash keys, method names, and identifiers.
+- **Symbols** are interned, `:name.object_id` always returns the same value. They are ideal for hash keys, method names, and identifiers.
 - **Strings** allocate a new object every time (unless frozen). Use them for data that changes or comes from user input.
 
 ### Numbers
@@ -147,7 +147,7 @@ puts num.floor  # => -37
 puts num.abs    # => 36.8
 ```
 
-> **Note:** In Ruby, numbers are objects too. `5.times { |i| puts i }` is valid because `5` is an instance of `Integer`, and `times` is a method on `Integer`. Even numeric literals are objects — this is central to Ruby's "everything is an object" philosophy.
+> **Note:** In Ruby, numbers are objects too. `5.times { |i| puts i }` is valid because `5` is an instance of `Integer`, and `times` is a method on `Integer`. Even numeric literals are objects, this is central to Ruby's "everything is an object" philosophy.
 
 ### Arrays
 
@@ -175,7 +175,7 @@ nums.compact               # removes nil values
 nums.zip([:a, :b, :c])    # pairs elements: [[3,:a],[1,:b],[4,:c]]
 ```
 
-Ruby arrays are **heterogeneous** — they can hold objects of different types: `[1, "hello", :sym, nil, [2, 3]]`.
+Ruby arrays are **heterogeneous**, they can hold objects of different types: `[1, "hello", :sym, nil, [2, 3]]`.
 
 ### Hashes (Dictionaries)
 
@@ -217,11 +217,11 @@ config.select { |k, v| v.is_a?(Integer) }  # => { port: 3000 }
 
 ```ruby
 def add_numbers(num1, num2 = 0)
-  num1 + num2   # implicit return — last expression is returned
+  num1 + num2   # implicit return, last expression is returned
 end
 ```
 
-Ruby has **implicit returns** — the value of the last evaluated expression in a method is automatically returned. Explicit `return` is only needed for early exits.
+Ruby has **implicit returns**, the value of the last evaluated expression in a method is automatically returned. Explicit `return` is only needed for early exits.
 
 #### Variadic Arguments
 
@@ -275,7 +275,7 @@ doubler.call(5)              # => 10
 
 | Feature | Proc | Lambda |
 |---|---|---|
-| Arity check | No — ignores extra args, assigns `nil` to missing ones | Yes — raises `ArgumentError` on mismatch |
+| Arity check | No, ignores extra args, assigns `nil` to missing ones | Yes, raises `ArgumentError` on mismatch |
 | `return` behavior | Returns from the *enclosing method* | Returns from the *lambda itself* only |
 
 #### The Yield Keyword
@@ -348,7 +348,7 @@ in { status: (500..) }
 end
 ```
 
-Pattern matching allows destructuring, guard clauses, and type checking — it's one of the most powerful recent additions to the language.
+Pattern matching allows destructuring, guard clauses, and type checking, it's one of the most powerful recent additions to the language.
 
 ### Loops
 
@@ -375,7 +375,7 @@ end
 # Times loop
 5.times { |i| puts i }   # 0 through 4
 
-# Each (idiomatic Ruby — preferred over for-in)
+# Each (idiomatic Ruby, preferred over for-in)
 lucky_numbers = [0, 1, 2, 3]
 lucky_numbers.each do |lucky|
   puts lucky
@@ -418,7 +418,7 @@ def withdraw(balance, amount)
 end
 ```
 
-The exception hierarchy matters — always rescue the **most specific** exceptions first. Ruby's hierarchy:
+The exception hierarchy matters, always rescue the **most specific** exceptions first. Ruby's hierarchy:
 
 ```
 Exception
@@ -440,7 +440,7 @@ Exception
     └── ...
 ```
 
-> **Note:** Never rescue bare `Exception` — it catches `Interrupt` (Ctrl+C) and `NoMemoryError`, which makes your program extremely hard to stop. Always rescue `StandardError` or more specific subclasses.
+> **Note:** Never rescue bare `Exception`, it catches `Interrupt` (Ctrl+C) and `NoMemoryError`, which makes your program extremely hard to stop. Always rescue `StandardError` or more specific subclasses.
 
 ---
 
@@ -468,7 +468,7 @@ book.read_book  # => Reading DDIA by Martin Kleppmann
 
 #### Attribute Accessors
 
-Ruby doesn't have public fields — instance variables (`@title`) are **always private**. You access them through methods. Ruby provides shorthand macros:
+Ruby doesn't have public fields, instance variables (`@title`) are **always private**. You access them through methods. Ruby provides shorthand macros:
 
 ```ruby
 attr_reader   :title            # generates: def title; @title; end
@@ -476,7 +476,7 @@ attr_writer   :title            # generates: def title=(val); @title = val; end
 attr_accessor :title            # generates both reader and writer
 ```
 
-These are actually **metaprogramming calls** — `attr_accessor` is a method on `Module` that dynamically defines getter/setter methods at class definition time.
+These are actually **metaprogramming calls**, `attr_accessor` is a method on `Module` that dynamically defines getter/setter methods at class definition time.
 
 ### Inheritance
 
@@ -497,7 +497,7 @@ dog = Dog.new
 dog.make_sound  # => "Woof"
 ```
 
-Ruby uses **single inheritance** — a class can only inherit from one parent. But it compensates with **mixins** (modules), which provide a form of multiple inheritance without the diamond problem.
+Ruby uses **single inheritance**, a class can only inherit from one parent. But it compensates with **mixins** (modules), which provide a form of multiple inheritance without the diamond problem.
 
 #### The `super` Keyword
 
@@ -561,8 +561,8 @@ puts v1 + v2   # => (4, 6)
 ### Modules and Mixins
 
 Modules serve two purposes in Ruby:
-1. **Namespacing** — grouping related classes/constants
-2. **Mixins** — sharing behavior across unrelated classes
+1. **Namespacing**, grouping related classes/constants
+2. **Mixins**, sharing behavior across unrelated classes
 
 ```ruby
 module Cream
@@ -572,7 +572,7 @@ module Cream
 end
 
 class Cookie
-  include Cream   # mixin — adds instance methods
+  include Cream   # mixin, adds instance methods
 end
 
 cookie = Cookie.new
@@ -635,7 +635,7 @@ This works because `prepend` inserts `Auditing` *before* `Record` in the method 
 
 ## Everything Is an Object
 
-Ruby's most fundamental design principle is that **everything is an object**. There are no primitives — every value, including numbers, booleans, and `nil`, is an instance of a class.
+Ruby's most fundamental design principle is that **everything is an object**. There are no primitives, every value, including numbers, booleans, and `nil`, is an instance of a class.
 
 ```ruby
 42.class          # => Integer
@@ -649,7 +649,7 @@ nil.to_a          # => []
 nil.to_s          # => ""
 ```
 
-Even **classes are objects** — they are instances of `Class`:
+Even **classes are objects**, they are instances of `Class`:
 
 ```ruby
 String.class         # => Class
@@ -662,7 +662,7 @@ BasicObject.superclass  # => nil (top of the hierarchy)
 
 ### The Ancestor Chain
 
-Every class has an **ancestor chain** — the ordered list of classes and modules Ruby searches when resolving a method call:
+Every class has an **ancestor chain**, the ordered list of classes and modules Ruby searches when resolving a method call:
 
 ```ruby
 Dog.ancestors
@@ -700,7 +700,7 @@ When you call a method on an object, Ruby follows this exact process:
 
 ### Singleton Classes (Eigenclasses)
 
-Every object in Ruby has a hidden **singleton class** — an anonymous class that sits between the object and its actual class in the lookup chain. This is where **per-object methods** live:
+Every object in Ruby has a hidden **singleton class**, an anonymous class that sits between the object and its actual class in the lookup chain. This is where **per-object methods** live:
 
 ```ruby
 str = "hello"
@@ -710,7 +710,7 @@ def str.shout
 end
 
 str.shout        # => "HELLO!!!"
-"world".shout    # => NoMethodError — only str has this method
+"world".shout    # => NoMethodError, only str has this method
 ```
 
 The singleton class is also how **class methods** work internally:
@@ -723,7 +723,7 @@ class Dog
 end
 ```
 
-`self.species` actually defines a method on `Dog`'s singleton class. `Dog` is an object (instance of `Class`), and `species` is a method on that specific object's singleton class. There is no separate concept of "static methods" in Ruby — it's all objects and singleton classes.
+`self.species` actually defines a method on `Dog`'s singleton class. `Dog` is an object (instance of `Class`), and `species` is a method on that specific object's singleton class. There is no separate concept of "static methods" in Ruby, it's all objects and singleton classes.
 
 ```ruby
 Dog.singleton_class.instance_methods(false)  # => [:species]
@@ -745,7 +745,7 @@ Source Code → Tokenizer → Parser (AST) → Compiler → YARV Bytecode → VM
 
 #### Phase 1: Tokenization (Lexing)
 
-The tokenizer reads raw source code characters and breaks them into **tokens** — the smallest meaningful units:
+The tokenizer reads raw source code characters and breaks them into **tokens**, the smallest meaningful units:
 
 ```ruby
 # Source:
@@ -769,7 +769,7 @@ pp Ripper.lex('puts "hello"')
 
 #### Phase 2: Parsing (AST Construction)
 
-The parser takes the token stream and builds an **Abstract Syntax Tree (AST)** — a tree representation of the program's structure:
+The parser takes the token stream and builds an **Abstract Syntax Tree (AST)**, a tree representation of the program's structure:
 
 ```ruby
 require 'ripper'
@@ -829,15 +829,15 @@ Stack after opt_plus:  [3]
 
 YARV uses several optimization techniques:
 - **Specialized instructions**: `opt_plus`, `opt_minus`, `opt_lt`, etc. bypass full method dispatch for common operations on integers and floats
-- **Inline caching**: method lookup results are cached at each call site — subsequent calls to the same method skip the full lookup
+- **Inline caching**: method lookup results are cached at each call site, subsequent calls to the same method skip the full lookup
 - **Instruction operand fusion**: common sequences of instructions are combined into a single instruction
 
 ### The Global Interpreter Lock (GIL/GVL)
 
-CRuby has a **Global VM Lock (GVL)** — a mutex that ensures only one thread executes Ruby code at a time. This means:
+CRuby has a **Global VM Lock (GVL)**, a mutex that ensures only one thread executes Ruby code at a time. This means:
 
 - **CPU-bound** Ruby threads run sequentially, even on multi-core machines
-- **I/O-bound** threads can run concurrently — the GVL is released during I/O operations (network, disk, sleep)
+- **I/O-bound** threads can run concurrently, the GVL is released during I/O operations (network, disk, sleep)
 - **C extensions** can manually release the GVL to enable true parallelism for their code
 
 ```ruby
@@ -855,8 +855,8 @@ threads.each(&:join)
 ```
 
 **Alternatives for true parallelism:**
-- **`Ractor`** (Ruby 3.0+): actor-based parallelism — each Ractor has its own GVL
-- **`Process.fork`**: OS-level process forking — true parallelism, higher memory cost
+- **`Ractor`** (Ruby 3.0+): actor-based parallelism, each Ractor has its own GVL
+- **`Process.fork`**: OS-level process forking, true parallelism, higher memory cost
 - **JRuby/TruffleRuby**: alternative Ruby implementations without a GVL
 
 ### Ractors (Ruby 3.0+)
@@ -874,7 +874,7 @@ end
 ractors.each { |r| puts r.take }
 ```
 
-Ractors communicate through **message passing** — they cannot share mutable state. Objects sent between Ractors are either **deep-copied** or **moved** (ownership transfer). This eliminates data races by design.
+Ractors communicate through **message passing**, they cannot share mutable state. Objects sent between Ractors are either **deep-copied** or **moved** (ownership transfer). This eliminates data races by design.
 
 ---
 
@@ -909,7 +909,7 @@ Ruby's GC has evolved significantly over the years:
 
 #### Generational GC
 
-Based on the **generational hypothesis** — most objects die young. Ruby divides objects into:
+Based on the **generational hypothesis**, most objects die young. Ruby divides objects into:
 
 - **Young generation**: recently allocated objects. Collected frequently (minor GC). These are fast because most young objects are already dead.
 - **Old generation**: objects that survived multiple minor GCs. Collected infrequently (major GC). A major GC marks *all* objects.
@@ -919,7 +919,7 @@ An object is **promoted** from young to old after surviving 3 minor GC cycles (c
 #### The Mark-and-Sweep Algorithm
 
 1. **Mark phase**: starting from **GC roots** (global variables, stack references, the constant table), traverse all reachable objects and mark them as "alive"
-2. **Sweep phase**: walk the entire heap — any unmarked object is dead and its slot is reclaimed for reuse
+2. **Sweep phase**: walk the entire heap, any unmarked object is dead and its slot is reclaimed for reuse
 
 GC roots include:
 - The VM stack (local variables, method arguments)
@@ -975,7 +975,7 @@ GC.stat
 
 ## Metaprogramming
 
-Metaprogramming is writing **code that writes code**. Ruby's dynamic nature makes it one of the best languages for metaprogramming — and this is the foundation of frameworks like Rails.
+Metaprogramming is writing **code that writes code**. Ruby's dynamic nature makes it one of the best languages for metaprogramming, and this is the foundation of frameworks like Rails.
 
 ### `method_missing`
 
@@ -1004,7 +1004,7 @@ obj.say_ruby       # => "Ruby"
 obj.respond_to?(:say_hello)  # => true (thanks to respond_to_missing?)
 ```
 
-> **Note:** Always override `respond_to_missing?` alongside `method_missing`. Without it, `respond_to?` returns `false` even for methods your `method_missing` handles — this breaks introspection and confuses other developers.
+> **Note:** Always override `respond_to_missing?` alongside `method_missing`. Without it, `respond_to?` returns `false` even for methods your `method_missing` handles, this breaks introspection and confuses other developers.
 
 ### `define_method`
 
@@ -1025,7 +1025,7 @@ client.get("/users", page: 1)     # => GET /users with {:page=>1}
 client.delete("/users/5")         # => DELETE /users/5 with {}
 ```
 
-This technique is heavily used in Rails — `ActiveRecord` defines attribute accessors based on database column names discovered at runtime.
+This technique is heavily used in Rails, `ActiveRecord` defines attribute accessors based on database column names discovered at runtime.
 
 ### `class_eval` and `instance_eval`
 
@@ -1055,7 +1055,7 @@ obj.reveal    # => 42
 
 ### Open Classes (Monkey Patching)
 
-Ruby classes are never "closed" — you can reopen any class and add or modify methods:
+Ruby classes are never "closed", you can reopen any class and add or modify methods:
 
 ```ruby
 class Integer
@@ -1104,8 +1104,8 @@ account.send(:secret_balance)         # => 1000000 (bypasses private!)
 account.public_send(:secret_balance)  # => NoMethodError (respects visibility)
 ```
 
-- **`send`**: calls any method, ignoring visibility — use for metaprogramming when you know what you're doing
-- **`public_send`**: respects `public`/`private`/`protected` — safer for general use
+- **`send`**: calls any method, ignoring visibility, use for metaprogramming when you know what you're doing
+- **`public_send`**: respects `public`/`private`/`protected`, safer for general use
 
 ### Hooks and Callbacks
 
@@ -1148,7 +1148,7 @@ Key hooks:
 
 ### DSLs (Domain-Specific Languages)
 
-Metaprogramming enables Ruby's most distinctive feature: the ability to create **internal DSLs** — code that reads like a custom language but is valid Ruby:
+Metaprogramming enables Ruby's most distinctive feature: the ability to create **internal DSLs**, code that reads like a custom language but is valid Ruby:
 
 ```ruby
 class Route
@@ -1188,7 +1188,7 @@ app.routes.each { |r| puts "#{r[:method].upcase} #{r[:path]}" }
 # POST /users
 ```
 
-This pattern — using `instance_eval` with blocks — is how tools like Rails routes, RSpec tests, Sinatra endpoints, and Gemfiles work. The block is evaluated in the context of a builder object, making the DSL syntax possible.
+This pattern, using `instance_eval` with blocks, is how tools like Rails routes, RSpec tests, Sinatra endpoints, and Gemfiles work. The block is evaluated in the context of a builder object, making the DSL syntax possible.
 
 ---
 
@@ -1241,7 +1241,7 @@ Lazy enumerators build a pipeline of transformations and only evaluate them when
 
 ### Fibers
 
-Fibers are **cooperative concurrency** primitives — lightweight coroutines that you manually schedule:
+Fibers are **cooperative concurrency** primitives, lightweight coroutines that you manually schedule:
 
 ```ruby
 fiber = Fiber.new do
@@ -1259,7 +1259,7 @@ fiber.resume   # => "Step 3"
 
 Fibers are the foundation of:
 - **Enumerators** (each `Enumerator` uses a `Fiber` internally)
-- **Fiber Scheduler** (Ruby 3.0+) — enables non-blocking I/O without callbacks
+- **Fiber Scheduler** (Ruby 3.0+), enables non-blocking I/O without callbacks
 
 #### Fiber Scheduler (Ruby 3.0+)
 
@@ -1296,7 +1296,7 @@ str.dup.frozen?    # => false
 str.clone.frozen?  # => true
 ```
 
-`freeze` is **shallow** — it freezes the object itself but not the objects it references:
+`freeze` is **shallow**, it freezes the object itself but not the objects it references:
 
 ```ruby
 arr = ["a", "b", "c"]
@@ -1328,7 +1328,7 @@ user&.address&.city  # => nil (chained safely)
           .tap { |arr| puts "After select: #{arr.inspect}" }
 ```
 
-`tap` yields the object to the block, then returns the object unchanged — perfect for inserting debug output into method chains.
+`tap` yields the object to the block, then returns the object unchanged, perfect for inserting debug output into method chains.
 
 ### `freeze` Constants
 
@@ -1357,11 +1357,11 @@ p.x = 3   # => NoMethodError (immutable!)
 
 Ruby is much more than its clean syntax suggests. Beneath the surface lies a sophisticated runtime:
 
-- **Everything is an object** — integers, classes, `nil`, even `true` and `false` are full objects with methods, singleton classes, and ancestors
+- **Everything is an object**, integers, classes, `nil`, even `true` and `false` are full objects with methods, singleton classes, and ancestors
 - **The interpreter pipeline** (tokenizer → parser → compiler → YARV VM) turns source code into optimized bytecode with inline caches and specialized instructions
 - **Generational, incremental GC with compaction** keeps memory efficient while minimizing pause times
-- **Metaprogramming** (`method_missing`, `define_method`, `class_eval`, hooks) lets you write code that generates code — the foundation of Rails and every major Ruby framework
+- **Metaprogramming** (`method_missing`, `define_method`, `class_eval`, hooks) lets you write code that generates code, the foundation of Rails and every major Ruby framework
 - **Blocks, Procs, Lambdas, and Fibers** provide a rich toolkit for functional programming and cooperative concurrency
 - **Modules and mixins** solve the code reuse problem without the complexity of multiple inheritance
 
-Understanding these internals doesn't just satisfy curiosity — it makes you a dramatically better Ruby developer. When you know how method lookup works, you can debug mysterious `NoMethodError`s. When you understand the GC, you can write memory-efficient code. When you grasp metaprogramming, you can read Rails source code instead of treating it as magic.
+Understanding these internals doesn't just satisfy curiosity, it makes you a dramatically better Ruby developer. When you know how method lookup works, you can debug mysterious `NoMethodError`s. When you understand the GC, you can write memory-efficient code. When you grasp metaprogramming, you can read Rails source code instead of treating it as magic.

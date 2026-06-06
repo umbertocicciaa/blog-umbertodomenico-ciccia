@@ -276,9 +276,9 @@ draft: true
 ## Deployment manager
 
 - purpose of deployment manager
-- gcloud deployment-manager deployments create my-deployment —config config.yaml
-- gcloud deployment-manager deployments create my-deployment —config config.yaml —preview
-- gcloud deployment-manager deployments update —config config.yaml
+- gcloud deployment-manager deployments create my-deployment,config config.yaml
+- gcloud deployment-manager deployments create my-deployment,config config.yaml,preview
+- gcloud deployment-manager deployments update,config config.yaml
 - gcloud deployment-manager resources create
 - gcloud deployment-manager resources update
 
@@ -306,7 +306,7 @@ draft: true
 
 - Identity-based firewall rules
 - how to enable logging for firewall rules
-- gcloud compute firewall-rules update <rule> —enable-logging
+- gcloud compute firewall-rules update <rule>,enable-logging
 
 ## Vpc
 

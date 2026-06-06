@@ -23,11 +23,11 @@ With millions of rows and numerous fields, the dataset is an ideal candidate for
 
 ## ⚙️ Technologies Used
 
-- **Apache Spark (Scala API)** — For distributed processing and querying  
-- **HDFS** — As the primary distributed file system for data storage  
-- **Hive** - For datawarehousing flights
-- **Docker Compose** — To setuo a local dev environment
-- **K8s** - For the future deploy of the application
+- **Apache Spark (Scala API)**, For distributed processing and querying  
+- **HDFS**, As the primary distributed file system for data storage  
+- **Hive**, For datawarehousing flights
+- **Docker Compose**, To setuo a local dev environment
+- **K8s**, For the future deploy of the application
 
 The infrastructure is designed to simulate a real-world Big data ecosystem on a developer machine.
 

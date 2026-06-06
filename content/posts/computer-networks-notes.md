@@ -10,7 +10,7 @@ math: true
 
 ## Introduction
 
-Computer networks are the backbone of modern computing. Every time you browse a website, send an email, or stream a video, you rely on a complex stack of protocols, algorithms, and hardware working together. This post is a comprehensive guide to how computer networks work — from the physical transmission of bits to the application-layer protocols you use daily.
+Computer networks are the backbone of modern computing. Every time you browse a website, send an email, or stream a video, you rely on a complex stack of protocols, algorithms, and hardware working together. This post is a comprehensive guide to how computer networks work, from the physical transmission of bits to the application-layer protocols you use daily.
 
 We will walk through the layered network models (OSI and TCP/IP), dive into each layer's responsibilities, explore routing and addressing, examine transport-layer reliability, and cover essential application-layer protocols. We will also touch on security, cloud computing, peer-to-peer systems, and distributed architectures like blockchain.
 
@@ -55,9 +55,9 @@ The **TCP/IP model** is the practical model used on the Internet. It collapses t
 
 A **protocol** is a set of rules governing the transfer of data between entities in different systems. Protocols define:
 
-- **Syntax** — the structure and organization of bits (format of messages)
-- **Semantics** — the meaning of each bit sequence
-- **Timing** — when and at what speed data should be sent
+- **Syntax**, the structure and organization of bits (format of messages)
+- **Semantics**, the meaning of each bit sequence
+- **Timing**, when and at what speed data should be sent
 
 ### 2.2 Data Units at Each Layer
 
@@ -95,9 +95,9 @@ The data link layer is responsible for node-to-node delivery of frames over a si
 
 ### 3.1 Core Functions
 
-- **Framing** — organizes raw bits into logical units called frames
-- **Error detection and correction** — ensures data integrity
-- **Flow control** — prevents a fast sender from overwhelming a slow receiver
+- **Framing**, organizes raw bits into logical units called frames
+- **Error detection and correction**, ensures data integrity
+- **Flow control**, prevents a fast sender from overwhelming a slow receiver
 
 ### 3.2 Framing
 
@@ -141,7 +141,7 @@ Sender                          Receiver
   │◄────────────── ACK (SN=1) ────│
 ```
 
-**Problem:** very low utilization — the sender is idle while waiting for ACKs.
+**Problem:** very low utilization, the sender is idle while waiting for ACKs.
 
 #### Sliding Window Protocols
 
@@ -183,10 +183,10 @@ When data flows in **both directions**, ACKs can be included ("piggybacked") ins
 └──────┴─────────┴─────────┴──────┴──────┴──────┘
 ```
 
-- **Flag** — `01111110`, start/end delimiter (with bit stuffing)
-- **Address** — physical address of the secondary station
-- **Control** — frame type: Information (I), Supervisory (S), or Unnumbered (U)
-- **FCS** — Frame Check Sequence for error detection
+- **Flag**, `01111110`, start/end delimiter (with bit stuffing)
+- **Address**, physical address of the secondary station
+- **Control**, frame type: Information (I), Supervisory (S), or Unnumbered (U)
+- **FCS**, Frame Check Sequence for error detection
 - **Connection lifecycle:** SABM (establish) → Data transfer → DISC (disconnect)
 
 ---
@@ -209,10 +209,10 @@ When two or more stations transmit simultaneously on a shared medium, a **collis
 Each station is assigned a **fixed time slot** (TDM) or frequency band (FDM):
 
 - ✅ **No collisions**
-- ❌ **Low channel utilization** — slots are wasted when a station has nothing to send
+- ❌ **Low channel utilization**, slots are wasted when a station has nothing to send
 - ❌ **High delay** when many stations are connected
 
-### 4.4 Dynamic Allocation — Controlled
+### 4.4 Dynamic Allocation, Controlled
 
 Collisions are avoided through coordination:
 
@@ -226,9 +226,9 @@ Collisions are avoided through coordination:
 - A station can only transmit when it holds the token
 - After transmitting, it passes the token to the next station
 - ✅ No collisions
-- ❌ Low fault tolerance — if the token is lost, recovery is needed
+- ❌ Low fault tolerance, if the token is lost, recovery is needed
 
-### 4.5 Dynamic Allocation — Contention (Random Access)
+### 4.5 Dynamic Allocation, Contention (Random Access)
 
 Stations transmit whenever they have data, accepting that collisions may occur:
 
@@ -254,7 +254,7 @@ $$S_{\max} = \frac{1}{e} \approx 0.368 \text{ (36.8\%)}$$
 #### CSMA (Carrier Sense Multiple Access)
 
 - **Listen before transmitting:** if the channel is busy, wait; if free, transmit
-- Collisions can still happen due to **propagation delay** — two stations may both sense the channel as free and transmit simultaneously
+- Collisions can still happen due to **propagation delay**, two stations may both sense the channel as free and transmit simultaneously
 - **Persistent strategies** determine behavior when the channel is busy (1-persistent, p-persistent, non-persistent)
 
 #### CSMA/CD (Collision Detection)
@@ -318,13 +318,13 @@ IPv4 addresses are 32 bits long, traditionally divided into **classes**:
 | **A** | 0 | 8 net / 24 host | 0.0.0.0 – 127.255.255.255 | Large networks |
 | **B** | 10 | 16 net / 16 host | 128.0.0.0 – 191.255.255.255 | Medium networks |
 | **C** | 110 | 24 net / 8 host | 192.0.0.0 – 223.255.255.255 | Small networks |
-| **D** | 1110 | — | 224.0.0.0 – 239.255.255.255 | Multicast |
-| **E** | 1111 | — | 240.0.0.0 – 255.255.255.255 | Reserved (future use) |
+| **D** | 1110 |, | 224.0.0.0 – 239.255.255.255 | Multicast |
+| **E** | 1111 |, | 240.0.0.0 – 255.255.255.255 | Reserved (future use) |
 
 **Special addresses:**
-- `127.x.x.x` — loopback (localhost)
-- Host bits all `0` — identifies the network itself
-- Host bits all `1` — broadcast to all hosts on that network
+- `127.x.x.x`, loopback (localhost)
+- Host bits all `0`, identifies the network itself
+- Host bits all `1`, broadcast to all hosts on that network
 
 ### 5.4 Subnetting
 
@@ -391,7 +391,7 @@ Every router maintains a **routing table** mapping destination networks to the n
 
 ### 6.2 Autonomous Systems (AS)
 
-The Internet is divided into **Autonomous Systems** — portions of the network under a single administrative authority with a unified routing policy.
+The Internet is divided into **Autonomous Systems**, portions of the network under a single administrative authority with a unified routing policy.
 
 - **Interior routers:** route within the same AS
 - **Exterior (border) routers:** route between different ASes
@@ -453,9 +453,9 @@ The transport layer provides **end-to-end communication** between processes on d
 - **Multiplexing:** the sender gathers data from multiple application sockets, wraps each with transport headers (including source/destination ports), and sends them down
 - **Demultiplexing:** the receiver uses the port numbers to deliver each segment to the correct application socket
 
-**UDP demultiplexing:** identified by **(destination IP, destination port)** — connectionless; different senders to the same port share a socket.
+**UDP demultiplexing:** identified by **(destination IP, destination port)**, connectionless; different senders to the same port share a socket.
 
-**TCP demultiplexing:** identified by **(source IP, source port, destination IP, destination port)** — connection-oriented; each connection gets its own socket.
+**TCP demultiplexing:** identified by **(source IP, source port, destination IP, destination port)**, connection-oriented; each connection gets its own socket.
 
 ### 7.2 UDP (User Datagram Protocol)
 
@@ -465,7 +465,7 @@ UDP is a **minimal, connectionless** transport protocol:
 - ❌ No reliability guarantees
 - ❌ No flow control or congestion control
 - ✅ Low overhead
-- ✅ Fast — suitable for real-time applications
+- ✅ Fast, suitable for real-time applications
 
 **UDP Segment Format:**
 
@@ -511,12 +511,12 @@ TCP is a **connection-oriented, reliable** transport protocol that provides:
 ```
 
 **Key fields:**
-- **Sequence Number** — byte number of the first data byte in this segment
-- **Acknowledgment Number** — next byte expected from the other side
-- **Window** — receiver's available buffer size (for flow control)
-- **Flags** — SYN, ACK, FIN, RST, PSH, URG
-- **Checksum** — covers pseudo-header + TCP header + data
-- **Options** — e.g., MSS (Maximum Segment Size)
+- **Sequence Number**, byte number of the first data byte in this segment
+- **Acknowledgment Number**, next byte expected from the other side
+- **Window**, receiver's available buffer size (for flow control)
+- **Flags**, SYN, ACK, FIN, RST, PSH, URG
+- **Checksum**, covers pseudo-header + TCP header + data
+- **Options**, e.g., MSS (Maximum Segment Size)
 
 ### 7.4 TCP Connection Management
 
@@ -524,7 +524,7 @@ TCP is a **connection-oriented, reliable** transport protocol that provides:
 
 ```
 Client                              Server
-  │                                    │  (LISTEN — passive open)
+  │                                    │  (LISTEN, passive open)
   │── SYN (seq=x) ───────────────────►│  1. Client sends SYN
   │                                    │
   │◄─────────── SYN+ACK (seq=y, ack=x+1)│  2. Server responds
@@ -568,8 +568,8 @@ $$\text{Throughput} \leq \frac{\text{Window Size}}{\text{RTT}}$$
 - If a segment is not acknowledged within the **Retransmission Timeout (RTO)** → the sender retransmits it
 
 Events that trigger retransmission:
-1. **Timeout** — the RTO expires
-2. **Three duplicate ACKs** — fast retransmit (see congestion control)
+1. **Timeout**, the RTO expires
+2. **Three duplicate ACKs**, fast retransmit (see congestion control)
 
 ### 7.7 TCP Congestion Control
 
@@ -679,9 +679,9 @@ Data is divided into **packets** that are sent independently through the network
 
 The Internet is structured in a **hierarchical** fashion:
 
-- **Tier 1 ISPs** — global backbone providers (e.g., Cogent, Level 3), connected to all other Tier 1s
-- **Tier 2 ISPs** — national/regional providers, connected to Tier 1 and peer with each other
-- **Tier 3 ISPs** — local access providers (the ISPs end users connect to)
+- **Tier 1 ISPs**, global backbone providers (e.g., Cogent, Level 3), connected to all other Tier 1s
+- **Tier 2 ISPs**, national/regional providers, connected to Tier 1 and peer with each other
+- **Tier 3 ISPs**, local access providers (the ISPs end users connect to)
 
 **IXP (Internet Exchange Point):** physical locations where ISPs interconnect and exchange traffic directly, reducing costs and latency.
 
@@ -695,8 +695,8 @@ The Internet is structured in a **hierarchical** fashion:
 | **Propagation delay** | Time for a bit to travel across the physical medium |
 
 **Tools:**
-- `ping` — measures round-trip time using ICMP Echo
-- `traceroute` — discovers the path and per-hop delay by sending packets with increasing TTL
+- `ping`, measures round-trip time using ICMP Echo
+- `traceroute`, discovers the path and per-hop delay by sending packets with increasing TTL
 
 ---
 
@@ -712,7 +712,7 @@ The Internet is structured in a **hierarchical** fashion:
 **Peer-to-Peer (P2P) Architecture:**
 - Peers communicate **directly** with each other
 - No always-on server required
-- Highly **scalable** — each new peer adds both demand and capacity
+- Highly **scalable**, each new peer adds both demand and capacity
 - Challenges: management, security, and reliability
 
 ### 10.2 HTTP (HyperText Transfer Protocol)
@@ -768,7 +768,7 @@ A **proxy server** (web cache) stores copies of recently requested resources:
 
 ### 10.3 FTP (File Transfer Protocol)
 
-FTP transfers files between a client and a server. It is **stateful** — the server remembers the client's state (working directory, authentication).
+FTP transfers files between a client and a server. It is **stateful**, the server remembers the client's state (working directory, authentication).
 
 - Uses **two TCP connections**:
   - **Control connection** (port 21): commands and responses
@@ -806,7 +806,7 @@ Sender's Mail Server ──SMTP──► Recipient's Mail Server
 
 #### IMAP (Internet Message Access Protocol)
 
-- **Manages email on the server** — create folders, search, mark as read
+- **Manages email on the server**, create folders, search, mark as read
 - Email stays on the server; client syncs
 - More feature-rich than POP3
 
@@ -883,10 +883,10 @@ Where $\sum u_i$ = total upload capacity of all peers. **Scales much better** be
 
 DHCP **automatically assigns IP addresses** to hosts on a network:
 
-1. **DHCP Discover** — host broadcasts a request for an IP address
-2. **DHCP Offer** — server responds with an available IP
-3. **DHCP Request** — host accepts the offered IP
-4. **DHCP Acknowledge** — server confirms the assignment
+1. **DHCP Discover**, host broadcasts a request for an IP address
+2. **DHCP Offer**, server responds with an available IP
+3. **DHCP Request**, host accepts the offered IP
+4. **DHCP Acknowledge**, server confirms the assignment
 
 ```
 Host                              DHCP Server
@@ -996,15 +996,15 @@ The public key is shared openly; the private key is kept secret. It is computati
 2. Compute $n = p \times q$ and $z = (p-1)(q-1)$
 3. Choose $e$ such that $\gcd(e, z) = 1$
 4. Compute $d$ such that $e \cdot d \equiv 1 \pmod{z}$
-5. Public key: $(n, e)$ — Private key: $(n, d)$
-6. Encrypt: $C = M^e \bmod n$ — Decrypt: $M = C^d \bmod n$
+5. Public key: $(n, e)$, Private key: $(n, d)$
+6. Encrypt: $C = M^e \bmod n$, Decrypt: $M = C^d \bmod n$
 
 ### 13.3 Message Integrity and Hash Functions
 
 A **hash function** $H$ produces a fixed-size **digest** from an arbitrary-length message:
 
 - Used to verify that a message has not been altered in transit
-- Must be **collision-resistant** — it should be computationally infeasible to find two different messages with the same hash
+- Must be **collision-resistant**, it should be computationally infeasible to find two different messages with the same hash
 
 **MAC (Message Authentication Code):**
 
@@ -1026,7 +1026,7 @@ A **digital signature** proves the authenticity and integrity of a message:
 
 ### 13.5 Secure Email (PEC)
 
-**PEC (Posta Elettronica Certificata)** — Certified Email — provides:
+**PEC (Posta Elettronica Certificata)**, Certified Email, provides:
 
 - Proof of **sending** and **delivery**
 - Legal validity equivalent to registered mail
@@ -1048,11 +1048,11 @@ A **digital signature** proves the authenticity and integrity of a message:
 Cloud computing delivers computing resources (servers, storage, databases, networking) **as a service** over the Internet.
 
 **Key characteristics:**
-1. **On-demand** — resources available when needed
-2. **Broad network access** — accessible via the Internet
-3. **Resource pooling** — shared infrastructure serving multiple tenants
-4. **Rapid elasticity** — scale up/down automatically
-5. **Measured service** — pay for what you use
+1. **On-demand**, resources available when needed
+2. **Broad network access**, accessible via the Internet
+3. **Resource pooling**, shared infrastructure serving multiple tenants
+4. **Rapid elasticity**, scale up/down automatically
+5. **Measured service**, pay for what you use
 
 ### 14.2 Deployment Models
 
@@ -1068,20 +1068,20 @@ Cloud computing delivers computing resources (servers, storage, databases, netwo
 |---|---|---|
 | **IaaS** (Infrastructure as a Service) | OS, middleware, applications | EC2, GCE |
 | **PaaS** (Platform as a Service) | Applications only | Heroku, App Engine |
-| **SaaS** (Software as a Service) | Nothing — just use it | Gmail, Salesforce |
+| **SaaS** (Software as a Service) | Nothing, just use it | Gmail, Salesforce |
 
 ### 14.4 Virtualization
 
 Virtualization is the foundation of cloud computing:
 
-- **Hypervisor** — software that creates and manages virtual machines
-- **Virtual Machine** — an emulated computer running its own OS on shared physical hardware
+- **Hypervisor**, software that creates and manages virtual machines
+- **Virtual Machine**, an emulated computer running its own OS on shared physical hardware
 
 ---
 
 ## 15. Distributed Systems
 
-### 15.1 Distributed Hash Tables (DHT) — Chord
+### 15.1 Distributed Hash Tables (DHT), Chord
 
 **Chord** is a protocol for a **peer-to-peer distributed hash table**:
 
@@ -1121,7 +1121,7 @@ A **blockchain** is a distributed, decentralized database:
 
 ## Conclusion
 
-Computer networks are built on a beautifully layered architecture where each layer handles a specific concern — from the physical transmission of signals to the application protocols we interact with daily. Understanding these layers, their protocols, and how they interact is fundamental for anyone working in software engineering, cloud computing, or DevOps.
+Computer networks are built on a beautifully layered architecture where each layer handles a specific concern, from the physical transmission of signals to the application protocols we interact with daily. Understanding these layers, their protocols, and how they interact is fundamental for anyone working in software engineering, cloud computing, or DevOps.
 
 Key takeaways:
 

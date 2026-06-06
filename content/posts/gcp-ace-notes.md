@@ -596,7 +596,7 @@ permissions denied error
 
 terraform
 
-simulating deploments —preview (plan) gcloud deployment-manager deployments create my-deployment —config config.yaml —preview
+simulating deploments,preview (plan) gcloud deployment-manager deployments create my-deployment,config config.yaml,preview
 
 ---
 

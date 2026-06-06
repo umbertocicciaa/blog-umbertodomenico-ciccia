@@ -41,7 +41,7 @@ sorted_numbers = sorted(numbers) # Returns a new list: [1, 2, 3, 5, 6]
 
 ### Custom Sorting with Lambdas
 
-During interviews, you will frequently need to sort abstract data structures like strings of different lengths, objects, or tuples based on a very specific condition. To accomplish this, both `.sort()` and `sorted()` accept a `key` argument. This argument takes a function that evaluates every element to dictate its sorting priority. To avoid cluttering your codebase with tiny, one-off helper functions, **lambda functions**—small, anonymous functions—are perfectly suited for keeping this logic concise and readable.
+During interviews, you will frequently need to sort abstract data structures like strings of different lengths, objects, or tuples based on a very specific condition. To accomplish this, both `.sort()` and `sorted()` accept a `key` argument. This argument takes a function that evaluates every element to dictate its sorting priority. To avoid cluttering your codebase with tiny, one-off helper functions, **lambda functions**,small, anonymous functions,are perfectly suited for keeping this logic concise and readable.
 
 ```python
 words = ["grape", "apple", "banana", "orange"]
@@ -87,7 +87,7 @@ for index, number in enumerate(nums):
 
 ### `zip()`
 
-When you need to iterate through two or more lists in parallel—such as iterating over a list of names and a list of corresponding scores—tracking a shared index variable is tedious. The `zip()` function elegantly ties the corresponding elements into tuples and iterates through them together. It automatically stops when the shortest list is exhausted.
+When you need to iterate through two or more lists in parallel,such as iterating over a list of names and a list of corresponding scores,tracking a shared index variable is tedious. The `zip()` function elegantly ties the corresponding elements into tuples and iterates through them together. It automatically stops when the shortest list is exhausted.
 
 ```python
 names = ['Alice', 'Bob', 'Charlie']
@@ -208,7 +208,7 @@ heapq.heapify(nums)
 ```
 
 **What about Max-Heaps?**
-Surprisingly, Python doesn't provide a direct flag or built-in function to flip a heap into a max-heap. The universally accepted trick is to fundamentally invert all numeric items mathematically—multiplying values by `-1` directly before pushing them into the internal min-heap, and explicitly multiplying them by `-1` again to return them to normal upon popping.
+Surprisingly, Python doesn't provide a direct flag or built-in function to flip a heap into a max-heap. The universally accepted trick is to fundamentally invert all numeric items mathematically,multiplying values by `-1` directly before pushing them into the internal min-heap, and explicitly multiplying them by `-1` again to return them to normal upon popping.
 
 ```python
 max_heap = []
