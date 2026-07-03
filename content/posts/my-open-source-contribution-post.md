@@ -1,7 +1,7 @@
 ---
 date: '2025-05-03T21:39:29+02:00'
 title: 'My Open Source Contribution'
-tags: ['k8s', 'jenkins', 'open-source']
+tags: ['kubernetes','open-source']
 searchable: false
 ---
 

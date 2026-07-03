@@ -2,7 +2,7 @@
 title: "My Raspberry Pi K3s Adventure: Installing Jenkins, Grafana & Prometheus with Helm"
 date: 2025-08-10T16:20:00+02:00
 author: "Umberto Domenico Ciccia"
-tags: ["raspberry-pi", "k3s", "jenkins", "grafana", "prometheus", "helm", "devops", "homelab"]
+tags: ["k3s", "dev-ops", "homelab"]
 description: "A hands-on story of how I installed Jenkins, Grafana, and Prometheus on my Raspberry Pi K3s cluster using Helm, with all the wins, struggles, and lessons learned."
 searchable: true
 ---

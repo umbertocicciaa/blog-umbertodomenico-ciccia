@@ -3,8 +3,7 @@ title: "End-to-End MLOps on AWS with CI/CD, GitOps, and Kubernetes"
 date: '2025-05-24T18:37:56+02:00'
 draft: false
 searchable: true
-tags: ["mlops", "aws", "sagemaker", "gitops", "kubernetes", "cicd", "terraform"]
-categories: ["Cloud Computing", "DevOps", "Machine Learning"]
+tags: ["mlops", "aws", "gitops", "kubernetes", "cicd", "terraform"]
 summary: "A complete walkthrough of building a production-grade MLOps pipeline using AWS Glue, SageMaker, Terraform, and Kubernetes, with automated CI/CD and GitOps for infrastructure and frontend deployment."
 ---
 

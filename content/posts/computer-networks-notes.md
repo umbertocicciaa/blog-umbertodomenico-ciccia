@@ -2,8 +2,7 @@
 date: '2026-02-09T18:00:00+02:00'
 title: 'Computer Networks: A Comprehensive Guide'
 description: "In-depth notes on computer networking: the OSI and TCP/IP models, data link and MAC layers, IP addressing, routing algorithms, transport protocols (TCP/UDP), application protocols (HTTP, DNS, SMTP, FTP), network security, NAT, DHCP, P2P systems, and more."
-tags: ["networking", "tcp-ip", "osi", "routing", "http", "dns", "tcp", "udp", "security", "notes"]
-categories: ["Engineering"]
+tags: ["networking", "security", "notes"]
 searchable: true
 math: true
 ---

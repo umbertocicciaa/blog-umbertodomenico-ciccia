@@ -2,7 +2,7 @@
 date: '2025-08-06T21:49:41+02:00'
 title: 'Cka Notes'
 description: Notes for CKA 2025 Certification
-tags: ["kubernetes", "kubestronaut", "devops", "certifications", "cka", "notes"]
+tags: ["kubernetes", "kubestronaut", "dev-ops", "certifications", "notes"]
 searchable: true
 ---
 

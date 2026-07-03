@@ -1,7 +1,7 @@
 ---
 date: '2025-06-28T12:32:41+02:00'
 title: 'How I Passed the KCNA Exam: A Practical Guide'
-tags: ['kcna', 'kubestronaut','notes', 'certifications']
+tags: ['kubestronaut','notes', 'certifications']
 description: "How i passed KCNA Certifications"
 searchable: true
 author: ["Umberto Domenico Ciccia"]

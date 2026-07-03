@@ -2,7 +2,7 @@
 date: '2026-02-09T12:00:00+02:00'
 title: 'System Design Fundamentals'
 description: "Comprehensive notes on system design fundamentals: scaling, caching, networking, APIs, proxies, load balancing, storage, and more."
-tags: ["system-design", "scalability", "caching", "load-balancing", "databases", "networking", "api", "notes"]
+tags: ["system-design", "databases", "networking", "notes"]
 categories: ["Engineering"]
 searchable: true
 math: true

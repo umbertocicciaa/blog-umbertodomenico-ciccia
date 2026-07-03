@@ -2,8 +2,7 @@
 title: "The Ultimate Python Cheat Sheet for Coding Interviews"
 date: 2026-03-18
 description: "A comprehensive guide to Python built-in functions, data structures, and tricks to ace your next technical coding interview."
-tags: ["python", "interview", "algorithms", "data-structures"]
-categories: ["engineering", "software-development", "python"]
+tags: ["interview", "algorithms", "data-structures"]
 draft: false
 ---
 

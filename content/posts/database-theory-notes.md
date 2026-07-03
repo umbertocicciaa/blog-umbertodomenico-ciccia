@@ -2,8 +2,7 @@
 date: '2026-02-09T20:00:00+02:00'
 title: 'Database Theory: How Databases Work Under the Hood'
 description: "Comprehensive notes on database theory: conceptual, logical, and physical design, relational algebra, SQL (MySQL), storage organization (hashing, B-trees, indexes), transactions, ACID properties, serializability, and locking protocols."
-tags: ["databases", "sql", "relational-algebra", "transactions", "b-tree", "hashing", "indexes", "acid", "notes"]
-categories: ["Engineering"]
+tags: ["databases", "notes"]
 searchable: true
 math: true
 ---

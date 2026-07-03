@@ -1,7 +1,7 @@
 ---
 date: '2025-06-28T12:32:41+02:00'
 title: 'Kcna Notes'
-tags: ['kcna', 'kubestronaut','notes']
+tags: ['kubestronaut','notes']
 description: "Tips and tricks for pass Terraform Associate Certifications"
 searchable: true
 ---

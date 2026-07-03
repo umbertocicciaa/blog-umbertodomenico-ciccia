@@ -1,7 +1,7 @@
 ---
 date: "2025-06-09T10:36:50+02:00"
 title: "Analyzing U.S. Air Flights with Apache Spark and Hadoop"
-tags: ["big data", "spark", "hadoop", "university project", "data engineering"]
+tags: ["big-data"]
 description: "A university project that explores large-scale flight data analysis using Apache Spark, Hadoop, and the U.S. DOT air travel dataset."
 searchable: true
 ---

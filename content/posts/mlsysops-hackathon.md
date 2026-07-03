@@ -1,7 +1,7 @@
 ---
 date: '2025-10-24T10:00:00+02:00'
 title: 'MLSysOps Hackathon: An Inspiring Adventure in AI Production Systems'
-tags: ['AI', 'MLOps', 'DevOps', 'SysOps', 'hackathon', 'Kubernetes', 'open-source']
+tags: ['ai', 'ml-ops', 'dev-ops', 'sys-ops', 'hackathon', 'kubernetes', 'open-source']
 description: "My experience at the MLSysOps Hackathon: building production-ready AI systems with Kubernetes, Prometheus, and Grafana"
 searchable: true
 author: ["Umberto Domenico Ciccia"]

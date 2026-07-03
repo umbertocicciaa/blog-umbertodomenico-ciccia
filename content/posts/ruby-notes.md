@@ -1,8 +1,7 @@
 ---
 title: Ddeep dive into Ruby
 date: 2026-02-09
-tags: [ruby, programming-languages, internals, metaprogramming]
-categories: ["Engineering"]
+tags: [ruby, programming-languages]
 searchable: true
 description: "A deep dive into how Ruby works, from syntax fundamentals to object model internals, garbage collection, and metaprogramming."
 draft: false

@@ -3,8 +3,7 @@ title: "chatgpt-cli: A Simple ChatGPT CLI That Stays Out of Your Way"
 date: 2026-01-31
 draft: false
 searchable: true
-tags: ["cli", "chatgpt", "openai", "terminal", "productivity", "open-source", "minimalism"]
-categories: ["Open Source", "Developer Tools"]
+tags: ["open-ai", "open-source"]
 description: "Announcing chatgpt-cli, a minimal, single-file ChatGPT CLI with no external dependencies. Simple, transparent, and easy to modify."
 slug: "chatgpt-cli-simple-terminal-tool"
 canonicalURL: "https://github.com/umbertocicciaa/chatgpt-cli"

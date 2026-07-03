@@ -1,7 +1,7 @@
 ---
 date: '2025-04-26T14:13:56+02:00'
 title: 'Gcp Ace flashcards'
-tags: ['gcp','notes','flashcard']
+tags: ['gcp','notes']
 searchable: false
 draft: true
 ---

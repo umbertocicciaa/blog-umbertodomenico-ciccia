@@ -4,8 +4,7 @@ date: 2025-10-23
 draft: true
 searchable: false
 summary: "easy-mlops is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime."
-tags: ["easy-mlops", "MLOps", "machine-learning", "DevOps", "FastAPI", "scikit-learn"]
-categories: ["MLOps", "Engineering"]
+tags: ["ml-ops", "machine-learning", "dev-ops"]
 authors: ["Umberto Domenico Ciccia"]
 canonicalURL: "https://github.com/umbertocicciaa/easy-mlops"
 description: "easy-mlops is a lightweight, opinionated framework that automates data prep, training, deployment, and monitoring with a CLI and distributed runtime,learn how to use easy-mlops step-by-step."
